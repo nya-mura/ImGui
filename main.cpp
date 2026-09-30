@@ -145,6 +145,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
                 Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
                 Vector3 SelfPosW2S = WorldToScreen(selfPos);
                 ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
+                // Test render at fixed center of the screen
+                ImDrawList *drawlist = ImGui::GetBackgroundDrawList();
+                drawlist->AddCircleFilled(ImVec2(get_width() / 2.0f, get_height() / 2.0f), 20.0f, IM_COL32(0, 255, 0, 255));
             }
         }
         ImGui::End();
