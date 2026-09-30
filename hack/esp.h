@@ -1,11 +1,7 @@
 #include <cstdint>      
 bool line = false;
 
-typedef struct {
-    int x;
-    int y;
-    int z;
-} Vector3;
+
 void DrawEsp(ImDrawList *drawlist, int screenWidth, int screenHeight) {
     void* BattleManager_Instance = Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance");
     if (BattleManager_Instance) {

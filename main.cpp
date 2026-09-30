@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <dlfcn.h>
+#include <stdint.h>
 #include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_android.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
@@ -19,6 +20,7 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+#include "Viscount/mine.h"
 #include "ByNameModding/Unity.h"
 #include "hack/class.h"
 #include "hack/esp.h"
