@@ -1,3 +1,22 @@
+
+/*Class Screen*/
+#define Screen_get_width (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Screen", "get_width")
+#define Screen_get_height (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Screen", "get_height")
+#define Screen_get_dpi (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Screen", "get_dpi")
+
+int get_width() {
+   int (*fn)() = (int(*)())Screen_get_width;
+   return fn();
+}
+int get_height() {
+    int (*fn)() = (int(*)())Screen_get_width;
+    return fn();
+}
+int get_dpi() {
+    int (*fn)() = (int(*)())Screen_get_dpi;
+    return fn();
+}
+
 #define Camera_get_main (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_main")
 #define Camera_WorldToScreenPoint (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "WorldToScreenPoint", 1)
 #define Camera_get_fieldOfView (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_fieldOfView")
