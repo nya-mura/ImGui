@@ -14,8 +14,10 @@ void DrawEsp(ImDrawList *drawlist, int screenWidth, int screenHeight) {
             if (SelfPosW2S.z > 0) {
                 SelfPosVec2 = ImVec2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
             }
-            drawlist->AddCircle(SelfPosVec2, IM_COL32(255, 255, 255, 255), 0, 1.0f);
-            
+
+            // Draws a solid red circle with a radius of 30.0f
+            drawlist->AddCircleFilled(SelfPosVec2, 30.0f, IM_COL32(255, 0, 0, 255), 0);
+
         
         }
     }
