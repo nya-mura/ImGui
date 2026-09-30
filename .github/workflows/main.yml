@@ -2,7 +2,7 @@ name: Build Android Library
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "mlbb" ]
   workflow_dispatch: # <--- THIS ENABLES THE MANUAL BUTTON!
 
 jobs:
