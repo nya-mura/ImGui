@@ -144,7 +144,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
                 ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
                 Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
                 Vector3 SelfPosW2S = WorldToScreen(selfPos);
-                ImGui::Text("Player Pos: %d %d %d",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
+                ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
             }
         }
         ImGui::End();
