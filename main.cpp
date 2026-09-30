@@ -121,7 +121,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
-    DrawESP(ImGui::GetBackgroundDrawList(), get_width(), get_height());
+    DrawEsp(ImGui::GetBackgroundDrawList(), get_width(), get_height());
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
     ImGui::Text("Android!");
