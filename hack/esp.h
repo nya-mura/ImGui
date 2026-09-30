@@ -2,7 +2,9 @@
 bool line = false;
 
 
-void DrawEsp(ImDrawList *drawlist, int screenWidth, int screenHeight) {
+void DrawEsp(ImDrawList *drawlist, int width, int height) {
+    float screenWidth = (float)width;
+    float screenHeight = (float)height;
     void* BattleManager_Instance = nullptr;
     Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance", &BattleManager_Instance);
     if (BattleManager_Instance) {
@@ -15,6 +17,8 @@ void DrawEsp(ImDrawList *drawlist, int screenWidth, int screenHeight) {
                 SelfPosVec2 = ImVec2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
             }
 
+            // Test render at fixed center of the screen
+            drawlist->AddCircleFilled(ImVec2(screenWidth / 2.0f, screenHeight / 2.0f), 20.0f, IM_COL32(0, 255, 0, 255));
             // Draws a solid red circle with a radius of 30.0f
             drawlist->AddCircleFilled(SelfPosVec2, 5, IM_COL32(255, 0, 0, 255));
 
