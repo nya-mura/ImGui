@@ -139,18 +139,18 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(void*) {
-    // void *base = NULL;
-    // while ((base = (void*)Tools::GetBaseAddress("libil2cpp.so")) == NULL) {
-    //     sleep(1);
-    // }
+    void *base = NULL;
+    while ((base = (void*)Tools::GetBaseAddress("liblogic.so")) == NULL) {
+        sleep(3);
+    }
 //     uintptr_t base = 0;
 //     while ((base = GetBaseAdress("liblogic.so")) == 0) {
 //     sleep(1);
 // }
 //
-//
-//     Il2CppAttach("liblogic.so");
-//
+
+    Il2CppAttach("liblogic.so");
+
     sleep(10);
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
