@@ -143,13 +143,13 @@ void *sylphy(void*) {
     // while ((base = (void*)Tools::GetBaseAddress("libil2cpp.so")) == NULL) {
     //     sleep(1);
     // }
-    uintptr_t base = 0;
-    while ((base = GetBaseAdress("liblogic.so")) == 0) {
-    sleep(1);
-}
-
-
-    Il2CppAttach("liblogic.so");
+//     uintptr_t base = 0;
+//     while ((base = GetBaseAdress("liblogic.so")) == 0) {
+//     sleep(1);
+// }
+//
+//
+//     Il2CppAttach("liblogic.so");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
