@@ -144,12 +144,12 @@ void *sylphy(void*) {
     //     sleep(1);
     // }
     uintptr_t base = 0;
-    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
+    while ((base = GetBaseAdress("liblogic.so")) == 0) {
     sleep(1);
 }
 
 
-    Il2CppAttach("libil2cpp.so");
+    Il2CppAttach("liblogic.so");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
