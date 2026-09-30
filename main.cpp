@@ -19,6 +19,11 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+#include "ByNameModding/Unity.h"
+#include "hack/class.h"
+#include "hack/esp.h"
+
+uintptr_t base = 0;
 
 bool clearMousePos = true, setup = false;
 struct UnityEngine_Vector2_Fields {
@@ -114,6 +119,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
+    DrawESP(ImGui::GetBackgroundDrawList(), get_width(), get_height();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
     ImGui::Text("Android!");
@@ -126,6 +132,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         ImGui::Begin("Debug");
         ImGui::Text("Debug information");
         ImGui::Text("FPS %.1f", ImGui::GetIO().Framerate);
+        ImGui::Text("Base Adress: 0x%lx\n", base);
         ImGui::End();
     }
     ImGui::Render();
@@ -143,7 +150,7 @@ void *sylphy(void*) {
     // while ((base = (void*)Tools::GetBaseAddress("liblogic.so")) == NULL) {
     //     sleep(3);
     // }
-    uintptr_t base = 0;
+
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
     sleep(3);
 }
