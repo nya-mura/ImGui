@@ -19,7 +19,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
             }
 
             // Test render at fixed center of the screen
-            drawlist->AddCircleFilled(ImVec2(screenWidth / 2.0f, screenHeight / 2.0f), 20.0f, IM_COL32(0, 255, 0, 255));
+            //drawlist->AddCircleFilled(ImVec2(screenWidth / 2.0f, screenHeight / 2.0f), 20.0f, IM_COL32(0, 255, 0, 255));
             // Draws a solid red circle with a radius of 30.0f
             drawlist->AddCircleFilled(SelfPosVec2, 5, IM_COL32(255, 0, 0, 255));
 
