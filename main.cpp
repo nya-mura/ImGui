@@ -135,6 +135,18 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         ImGui::Text("Debug information");
         ImGui::Text("FPS %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Base Adress: 0x%lx\n", base);
+        void* BattleManager_Instance = nullptr;
+        Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance", &BattleManager_Instance);
+        if (BattleManager_Instance) {
+            ImGui::Text("BattleManager_Instance: 0x%lx", (uintptr_t)BattleManager_Instance);
+            uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
+            if (m_LocalPlayerShow) {
+                ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
+                Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
+                Vector3 SelfPosW2S = WorldToScreen(selfPos);
+                ImGui::Text("Player Pos: %d %d %d",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
+            }
+        }
         ImGui::End();
     }
     ImGui::Render();
