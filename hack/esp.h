@@ -16,7 +16,7 @@ void DrawEsp(ImDrawList *drawlist, int screenWidth, int screenHeight) {
             }
 
             // Draws a solid red circle with a radius of 30.0f
-            drawlist->AddCircleFilled(SelfPosVec2, 30.0f, IM_COL32(255, 0, 0, 255), 0);
+            drawlist->AddCircleFilled(SelfPosVec2, 5, IM_COL32(255, 0, 0, 255));
 
         
         }
