@@ -16,12 +16,20 @@ int get_dpi() {
     int (*fn)() = (int(*)())Screen_get_dpi;
     return fn();
 }
-
+#define Transform_get_position (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Transform", "get_position")
+#define Component_get_transform (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Component", "get_transform")
 #define Camera_get_main (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_main")
 #define Camera_WorldToScreenPoint (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "WorldToScreenPoint", 1)
 #define Camera_get_fieldOfView (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_fieldOfView")
 #define Camera_set_fieldOfView (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "set_fieldOfView", 1)
-
+void* get_transform(void* instance) {
+    void* (*fn)(void*) = (void*(*)(void*))Component_get_transform;
+    return fn(instance);
+}
+Vector3 get_position(void* instance) {
+    Vector3 (*fn)(void*) = (Vector3(*)(void*))Transform_get_position;
+    return fn(instance);
+}
 void* get_main() {
     void* (*fn)() = (void*(*)())Camera_get_main;
     return fn();
