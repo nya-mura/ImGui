@@ -17,22 +17,22 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                 SelfPosVec2 = ImVec2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
                 
             }
-            monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers) {
-                if (m_ShowPlayers) {
-                    for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
-                        uintptr_t Pawn = m_ShowPlayers->getItems()[i];
-                        if (!Pawn) {
-                            continue;
-                        }
-                        bool m_bSameCampType = *(bool*)((uintptr_t)Pawn + m_bSameCampType);
-                        if (m_bSameCampType) {
-                            continue;
-                        }
-                        bool m_bDeath = *(bool*)((uintptr_t)Pawm + EntityBase_m_bDeath)
-                    }
-                }
-            }
-
+            // monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers) {
+            //     if (m_ShowPlayers) {
+            //         for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
+            //             uintptr_t Pawn = m_ShowPlayers->getItems()[i];
+            //             if (!Pawn) {
+            //                 continue;
+            //             }
+            //             bool m_bSameCampType = *(bool*)((uintptr_t)Pawn + m_bSameCampType);
+            //             if (m_bSameCampType) {
+            //                 continue;
+            //             }
+            //             bool m_bDeath = *(bool*)((uintptr_t)Pawm + EntityBase_m_bDeath)
+            //         }
+            //     }
+            // }
+            //
             // Test render at fixed center of the screen
             //drawlist->AddCircleFilled(ImVec2(screenWidth / 2.0f, screenHeight / 2.0f), 20.0f, IM_COL32(0, 255, 0, 255));
             // Draws a solid red circle with a radius of 30.0f
