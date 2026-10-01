@@ -22,14 +22,23 @@ int get_dpi() {
 #define Camera_get_fieldOfView (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_fieldOfView")
 #define Camera_set_fieldOfView (uintptr_t) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "set_fieldOfView", 1)
 
-void* get_main() {
-    void* (*fn)() = (void*(*)())Camera_get_main;
-    return fn();
+// void* get_main() {
+//     void* (*fn)() = (void*(*)())Camera_get_main;
+//     return fn();
+// }
+//
+// Vector3 WorldToScreen(Vector3 position){
+//     Vector3 (*fn)(void*, Vector3) = (Vector3(*)(void*, Vector3))Camera_WorldToScreenPoint;
+//     return fn(get_main(), position);
+// }
+//
+void *get_main() {
+  return reinterpret_cast<void *(__fastcall *)()>(Camera_get_main)();
 }
 
-Vector3 WorldToScreen(Vector3 position){
-    Vector3 (*fn)(void*, Vector3) = (Vector3(*)(void*, Vector3))Camera_WorldToScreenPoint;
-    return fn(get_main(), position);
+Vector3 WorldToScreenPoint(Vector3 position) {
+  return reinterpret_cast<Vector3(__fastcall *)(void *, Vector3)>(
+      Camera_WorldToScreenPoint)(get_main(), position);
 }
 float get_fieldOfView() {
     float (*fn)(void*) = (float(*)(void*))Camera_get_fieldOfView;

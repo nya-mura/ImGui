@@ -14,8 +14,8 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
             Vector3 SelfPosW2S = WorldToScreen(selfPos);
             ImVec2 SelfPosVec2 = ImVec2(screenWidth - SelfPosW2S.x, SelfPosW2S.y);
             if (SelfPosW2S.z <= 0) {
-                // SelfPosVec2 = ImVec2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
-                return;
+                SelfPosVec2 = ImVec2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
+                // return;
             }
 
             // Test render at fixed center of the screen
