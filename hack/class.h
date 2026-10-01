@@ -36,7 +36,7 @@ void *get_main() {
   return reinterpret_cast<void *(__fastcall *)()>(Camera_get_main)();
 }
 
-Vector3 WorldToScreenPoint(Vector3 position) {
+Vector3 WorldToScreen(Vector3 position) {
   return reinterpret_cast<Vector3(__fastcall *)(void *, Vector3)>(
       Camera_WorldToScreenPoint)(get_main(), position);
 }
