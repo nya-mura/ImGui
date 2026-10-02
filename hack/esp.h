@@ -37,7 +37,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (m_bDeath) {
                         continue;
                     }
-                    bool canSight = *(bool*)((uintptr_t)Pawm + EntityBase_canSight);
+                    bool canSight = *(bool*)((uintptr_t)Pawn + EntityBase_canSight);
                     int CurHp = *(int*)((uintptr_t)Pawn + EntityBase_m_Hp);
                     int MaxHp = *(int*)((uintptr_t)Pawn + EntityBase_m_HpMax);
 
@@ -54,7 +54,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         boxColor = IM_COL32(138,  43, 226, 255);
                     }
 
-                    Vector HeadPosVec2 = {RootPosVec2.x, RootPosVec2.y - (screenHeight / 10.35)};
+                    Vector2 HeadPosVec2 = {RootPosVec2.x, RootPosVec2.y - (screenHeight / 10.35)};
 
                     drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
                     if (line) {                    
@@ -65,15 +65,15 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        draw->AddRect(vStart, vEnd, boxColor, 0, 140, 1.7f);
+                        drawlist->AddRect(vStart, vEnd, boxColor, 0, 140, 1.7f);
                     }
 
                     if (health) {
                         float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
                         float boxWidth = boxHeight * 0.75f;
-                        ImVec2 vStart = {Hea.x - (boxWidth / 2), HeadPosVec2.y};
+                        ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        float hpPercent = (float)curHP / (float)maxHP;
+                        float hpPercent = (float)curHp / (float)maxHp;
                         float barWidth = 5.0f;
                         float gap = 3.0f;
                         ImVec2 hpBgStart = {vStart.x - barWidth - gap, vStart.y};
@@ -81,15 +81,15 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float fillHeight = boxHeight * hpPercent;
                         ImVec2 hpFillStart = {hpBgStart.x, hpBgEnd.y - fillHeight};
                         ImVec2 hpFillEnd = hpBgEnd;
-                        draw->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
-                        draw->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220, 20, 60, 255));
+                        drawlist->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
+                        drawlist->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220, 20, 60, 255));
                     }
                 }
             }
             monoList<void **> *m_ShowMonsters = *(monoList<void **> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowMonsters);
             if (m_ShowMonsters) {
-                for (int i = 0; i < m_ShowMonsters.getSize(); i++) {
-                    void* Pawn = m_ShowMonsters.getItems()[i];
+                for (int i = 0; i < m_ShowMonsters->getSize(); i++) {
+                    void* Pawn = m_ShowMonsters->getItems()[i];
                     if (!Pawn) {
                         continue;
                     }
@@ -97,7 +97,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (MonsterToString(m_ID) == "NO") {
                         continue;
                     }
-                    bool m_bDeath = *(boo*)((uintptr_t)Pawn + EntityBase_m_bDeath);
+                    bool m_bDeath = *(bool*)((uintptr_t)Pawn + EntityBase_m_bDeath);
                     if (m_bDeath) {
                         continue;
                     }
@@ -116,7 +116,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float boxWidth = boxHeight * 0.75;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        draw->AddRect(vStart, vEnd, boxColor, 0, 240, 1.7f);
+                        drawlist->AddRect(vStart, vEnd, boxColor, 0, 240, 1.7f);
                     }
                     if (monHealth) {
 
@@ -132,8 +132,8 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float fillHeight = boxHeight * hpPercent;
                         ImVec2 hpFillStart = {hpBgStart.x, hpBgEnd.y - fillHeight};
                         ImVec2 hpFillEnd = hpBgEnd;
-                        draw->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
-                        draw->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220,  20,  60, 255));
+                        drawlist->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
+                        drawlist->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220,  20,  60, 255));
                     }
 
                 }
