@@ -22,9 +22,9 @@
 #include "Viscount/memory.h"
 #include "Viscount/mine.h"
 #include "ByNameModding/Unity.h"
-// #include "hack/class.h"
-// #include "hack/esp.h"
-#include "test.hpp"
+#include "hack/class.h"
+#include "hack/esp.h"
+// #include "test.hpp"
 
 uintptr_t base = 0;
 

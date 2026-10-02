@@ -2,6 +2,7 @@
 bool line = false;
 
 
+
 void DrawEsp(ImDrawList *drawlist, int width, int height) {
     float screenWidth = (float)width;
     float screenHeight = (float)height;
@@ -13,7 +14,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
             Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
             Vector3 SelfPosW2S = WorldToScreen(selfPos);
             Vector2 SelfPosVec2 = {screenWidth - SelfPosW2S.x, SelfPosW2S.y};
-            if (SelfPosW2S.z <= 0) {
+            if (SelfPosW2S.z > 0) {
                 SelfPosVec2 = {SelfPosW2S.x, screenHeight - SelfPosW2S.y};
                 
             }
