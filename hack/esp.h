@@ -54,7 +54,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         boxColor = IM_COL32(138,  43, 226, 255);
                     }
 
-                    Vector2 HeadPosVec2 = {RootPosVec2.x, RootPosVec2.y - (screenHeight / 10.35)};
+                    Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2.y - (screenHeight / 10.35))};
 
                     drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
                     if (line) {                    
@@ -73,7 +73,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        float hpPercent = (float)curHp / (float)maxHp;
+                        float hpPercent = (float)CurHp / (float)MaxHp;
                         float barWidth = 5.0f;
                         float gap = 3.0f;
                         ImVec2 hpBgStart = {vStart.x - barWidth - gap, vStart.y};
@@ -109,7 +109,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (RootPosW2S.z > 0) {
                         RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
                     }
-                    Vector2 HeadPosVec2 = {RootPosVec2.x, RootPosVec2 - (screenHeight / 10.35)};
+                    Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2 - (screenHeight / 10.35))};
                     if (monBox) {
 
                         float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
