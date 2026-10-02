@@ -136,9 +136,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance", &BattleManager_Instance);
         if (BattleManager_Instance) {
             ImGui::Text("BattleManager_Instance: 0x%lx", (uintptr_t)BattleManager_Instance);
-            
-            ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
-            ImGui::Text("Main offset: 0x%lx", Transform_get_position);
+            if (Component_get_transform) {
+                ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
+                if(Transform_get_position) {
+                    ImGui::Text("Main offset: 0x%lx", Transform_get_position);
+                } else {
+                    ImGui::Text("Main Null");
+                }
+            } else {
+                ImGui::Text("Tranform NULL");
+            }
             uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
             if (m_LocalPlayerShow) {
                 ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
@@ -171,11 +178,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(void*) {
-    // void *base = NULL;
-    // while ((base = (void*)Tools::GetBaseAddress("liblogic.so")) == NULL) {
-    //     sleep(3);
-    // }
-
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
     sleep(3);
 }
