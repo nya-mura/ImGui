@@ -95,7 +95,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         continue;
                     }
                     int m_ID = *(int*)((uintptr_t)Pawn + EntityBase_m_ID);
-                    char* monster = monsterToString(m_ID);
+                    const char* monster = monsterToString(m_ID);
                     if (strcmp(monster, "NO") == 0) {
                         continue;
 
@@ -153,7 +153,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
 
                     if (m_ID == 2003 && CurHp < MaxHp) {
                         char* strAlert = "ALERT!!! Turtle is under attack!";
-                        ImVec2 textSize = ImGui::CalcTextSize(strAlert, 0, ((float)screenHeight / 31.0f);
+                        ImVec2 textSize = ImGui::CalcTextSize(strAlert, 0, ((float)screenHeight / 31.0f));
                         drawlist->AddText(NULL, ((float) screenHeight / 31.0f), {(float)(screenWidth / 2) - (textSize.x / 2), (float)(screenHeight - screenHeight) + (float)(screenHeight / 8.7f)}, IM_COL32(255, 255, 100, 255), strAlert);
                     }
                 }
