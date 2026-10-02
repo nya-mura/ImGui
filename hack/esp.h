@@ -17,7 +17,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                 SelfPosVec2 = {SelfPosW2S.x, screenHeight - SelfPosW2S.y};
                 
             }
-            monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers) {
+            monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers);
                 if (m_ShowPlayers) {
                     for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
                         uintptr_t Pawn = m_ShowPlayers->getItems()[i];
@@ -44,11 +44,8 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
 
                     }
                 }
-            }
-
-
+            
         }
-
     
 
         
