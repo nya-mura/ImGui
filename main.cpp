@@ -145,7 +145,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
                         ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
                         Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
                         Vector3 getPos = {getPos.x = 0.0f, getPos.y = 0.0f, getPos.z = 0.0f};
-                        void* idk = get_transform(m_LocalPlayerShow);
+                        void* idk = get_transform((void*)m_LocalPlayerShow);
                         if (idk) {
                             ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
                         }
