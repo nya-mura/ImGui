@@ -159,22 +159,22 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
                 ImGui::Text("Tranform NULL");
             }
             // uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
-            if (m_LocalPlayerShow) {
-
-
-
-                // void* idk = get_transform((void*)m_LocalPlayerShow);
-                // if (idk) {
-                //     ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
-                //     getPos = get_position(idk);
-                //     ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
-                //
-                // }
-                ImGui::Text("Original Self: %f %f %f", selfPos.x, selfPos.y, selfPos.z);
-                
-                Vector3 SelfPosW2S = WorldToScreen(selfPos);
-                ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
-            }
+            // if (m_LocalPlayerShow) {
+            //
+            //
+            //
+            //     // void* idk = get_transform((void*)m_LocalPlayerShow);
+            //     // if (idk) {
+            //     //     ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
+            //     //     getPos = get_position(idk);
+            //     //     ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
+            //     //
+            //     // }
+            //     // ImGui::Text("Original Self: %f %f %f", selfPos.x, selfPos.y, selfPos.z);
+            //     //
+            //     // Vector3 SelfPosW2S = WorldToScreen(selfPos);
+            //     // ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
+            // }
         }
         ImGui::End();
     }
