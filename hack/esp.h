@@ -98,13 +98,14 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     char* monster = monsterToString(m_ID);
                     if (strcmp(monster, "NO") == 0) {
                         continue;
-                        munmap(moster, 64);
+                        munmap(monster, 64);
                     }
                     
                     bool m_bDeath = *(bool*)((uintptr_t)Pawn + EntityBase_m_bDeath);
                     if (m_bDeath) {
                         continue;
                     }
+                    bool canSight = *(bool*)((uintptr_t)Pawn + EntityBase_canSight);
                     int CurHp = *(int*)((uintptr_t)Pawn + EntityBase_m_Hp);
                     int MaxHp = *(int*)((uintptr_t)Pawn + EntityBase_m_HpMax);
                     Vector3 position = *(Vector3*)((uintptr_t)Pawn + ShowEntity__Position);
@@ -113,7 +114,11 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (RootPosW2S.z > 0) {
                         RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
                     }
-                    Vector2 HeadPosVec2 = {RootPosVec2.x, RootPosVec2 - (float)(screenHeight / 10.35)};
+                    ImU32 boxColor = IM_COL32(255, 215, 0, 255);
+                    if (canSight) {
+                        boxColor = IM_COL32(255, 165, 0, 255);
+                    }
+                    Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2.y - (screenHeight / 10.35))};
                     if (monBox) {
 
                         float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
@@ -128,7 +133,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        float hpPercent = (float)curHP / (float)maxHP;
+                        float hpPercent = (float)CurHP / (float)MaxHP;
                         float barWidth = 5.0f;
                         float gap = 3.0f;
                         ImVec2 hpBgStart = {vStart.x - barWidth - gap, vStart.y};
