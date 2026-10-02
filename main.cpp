@@ -22,8 +22,9 @@
 #include "Viscount/memory.h"
 #include "Viscount/mine.h"
 #include "ByNameModding/Unity.h"
-#include "hack/class.h"
-#include "hack/esp.h"
+// #include "hack/class.h"
+// #include "hack/esp.h"
+#include "test.hpp"
 
 uintptr_t base = 0;
 
@@ -121,7 +122,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
-    DrawEsp(ImGui::GetBackgroundDrawList(), get_width(), get_height());
+    // DrawEsp(ImGui::GetBackgroundDrawList(), get_width(), get_height());
+    DrawEsp(ImGui::GetBackgroundDrawList());
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
        ImGui::Checkbox("Debug Menu", &debug);
