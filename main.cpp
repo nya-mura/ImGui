@@ -124,11 +124,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     DrawEsp(ImGui::GetBackgroundDrawList(), get_width(), get_height());
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
-    ImGui::Text("Android!");
-    ImGui::Checkbox("Click", &idk);
-    ImGui::SliderFloat("Value",&value,0.0f,100.0f);
-    ImGui::Text("Bye!");
-    ImGui::Checkbox("Debug Menu", &debug);
+       ImGui::Checkbox("Debug Menu", &debug);
+       ImGui::Text("Test");
     ImGui::End(); 
     if (debug) {
         ImGui::Begin("Debug");
@@ -143,9 +140,19 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
             if (m_LocalPlayerShow) {
                 ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
                 Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
-                Vector3 getPos = get_position(get_transform((void*)m_LocalPlayerShow));
+                Vector3 getPos = {getPos.x = 0.0f, getPos.y = 0.0f, getPos.z = 0.0f};
+
+                ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
+                ImGui::Text("Main offset: 0x%lx", Transform_get_position);
+                void* idk = get_transform((void*)m_LocalPlayerShow);
+                if (idk) {
+                    ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
+                    getPos = get_position(idk);
+                    ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
+
+                }
                 ImGui::Text("Original Self: %f %f %f", selfPos.x, selfPos.y, selfPos.z);
-                ImGui::Text("Mine: %f %f %f", getPos.x, getPos.y, getPos.z);
+                
                 Vector3 SelfPosW2S = WorldToScreen(selfPos);
                 ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
             }
