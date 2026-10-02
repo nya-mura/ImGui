@@ -14,7 +14,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
             Vector3 SelfPosW2S = WorldToScreen(selfPos);
             Vector2 SelfPosVec2 = {screenWidth - SelfPosW2S.x, SelfPosW2S.y};
             if (SelfPosW2S.z <= 0) {
-                SelfPosVec2 = {SelfPosW2S.x, screenHeight - SelfPosW2S.y}
+                SelfPosVec2 = {SelfPosW2S.x, screenHeight - SelfPosW2S.y};
                 
             }
             monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers) {
