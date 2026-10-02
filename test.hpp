@@ -131,7 +131,6 @@ void DrawEsp(ImDrawList* draw) {
                   boxColor = IM_COL32(138,  43, 226, 255);
               }
               Vector3 enemyWorldPos = *(Vector3 *) ((uintptr_t)Pawn + ShowEntity_Position);
-              enemyWorldPos.y -= 3.6f;
               Vector3 enemyScreenPos = WorldToScreenPoint(enemyWorldPos);
               ImVec2 enemy = ImVec2(gameW - enemyScreenPos.x, enemyScreenPos.y);
               if (enemyScreenPos.z > 0) {
@@ -197,7 +196,6 @@ void DrawEsp(ImDrawList* draw) {
                   boxColor = IM_COL32(255, 165, 0, 255);
               }
               Vector3 creepWorldPos = *(Vector3 *)((uintptr_t)Pawn + ShowEntity_Position);
-              creepWorldPos.y -= 3.6f;
               Vector3 creepScreenPos = WorldToScreenPoint(creepWorldPos);
               ImVec2 creep = ImVec2(gameW - creepScreenPos.x, creepScreenPos.y);
               if (creepScreenPos.z > 0) {
