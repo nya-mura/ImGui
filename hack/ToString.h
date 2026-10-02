@@ -2,7 +2,7 @@
 #include <cstring>
 #include <linux/mman.h>
 #include <sys/mman.h>
-char* MonsterToString(int m_id) {
+char* monsterToString(int m_id) {
     size_t size = sizeof(char) * 64;
     char* strMonster = (char*)mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     switch (m_id) {

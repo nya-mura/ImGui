@@ -1,4 +1,5 @@
 #include <cstdint>      
+#include <sys/mman.h>
 bool line = true;
 bool box = true;
 bool health = true;
@@ -94,9 +95,12 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         continue;
                     }
                     int m_ID = *(int*)((uintptr_t)Pawn + EntityBase_m_ID);
-                    if (MonsterToString(m_ID) == "NO") {
+                    char* monster = monsterToString(m_ID);
+                    if (strcmp(monster, "NO") == 0) {
                         continue;
+                        munmap(moster, 64);
                     }
+                    
                     bool m_bDeath = *(bool*)((uintptr_t)Pawn + EntityBase_m_bDeath);
                     if (m_bDeath) {
                         continue;
@@ -109,7 +113,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (RootPosW2S.z > 0) {
                         RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
                     }
-                    Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2 - (screenHeight / 10.35))};
+                    Vector2 HeadPosVec2 = {RootPosVec2.x, RootPosVec2 - (float)(screenHeight / 10.35)};
                     if (monBox) {
 
                         float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
@@ -135,6 +139,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         drawlist->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
                         drawlist->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220,  20,  60, 255));
                     }
+                    munmap(monster, 64);
 
                 }
             }
