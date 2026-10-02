@@ -24,7 +24,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (!Pawn) {
                         continue;
                     }
-                    bool m_bSameCampType = *(bool*)((uintptr_t)Pawn + m_bSameCampType);
+                    bool m_bSameCampType = *(bool*)((uintptr_t)Pawn + EntityBase_m_bSameCampType);
                     if (m_bSameCampType) {
                         continue;
                     }
@@ -36,7 +36,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     Vector3 RootPosW2S = WorldToScreen(position);
                     Vector2 RootPosVec2 = {screenWidth - RootPosW2S.x, RootPosW2S.y};
                     if (RootPosW2S.z > 0) {
-                    RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
+                        RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
                     }
 
                     drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
