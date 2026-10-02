@@ -12,9 +12,9 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
         if (m_LocalPlayerShow) {
             Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
             Vector3 SelfPosW2S = WorldToScreen(selfPos);
-            Vector2 SelfPosVec2 = Vector2(screenWidth - SelfPosW2S.x, SelfPosW2S.y);
+            Vector2 SelfPosVec2 = {screenWidth - SelfPosW2S.x, SelfPosW2S.y};
             if (SelfPosW2S.z <= 0) {
-                SelfPosVec2 = Vector2(SelfPosW2S.x, screenHeight - SelfPosW2S.y);
+                SelfPosVec2 = {SelfPosW2S.x, screenHeight - SelfPosW2S.y}
                 
             }
             monoList<void**> *m_ShowPlayers = *(monoList<void**> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowPlayers) {
@@ -34,9 +34,9 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         }
                         Vector3 position = *(Vector3*)((uintptr_t)Pawn + ShowEntity__Position);
                         Vector3 RootPosW2S = WorldToScreen(position);
-                        Vector2 RootPosVec2 = Vector2(screenWidth - RootPosW2S.x, RootPosW2S.y);
+                        Vector2 RootPosVec2 = {screenWidth - RootPosW2S.x, RootPosW2S.y};
                         if (RootPosW2S.z > 0) {
-                            RootPosVec2 = Vector2(RootPosW2S.x, screenHeight - RootPosW2S.y);
+                            RootPosVec2 = {RootPosW2S.x, screenHeight - RootPosW2S.y};
                         }
 
                         drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
