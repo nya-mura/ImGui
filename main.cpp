@@ -139,9 +139,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         if (BattleManager_Instance) {
             ImGui::Text("BattleManager_Instance: 0x%lx", (uintptr_t)BattleManager_Instance);
             uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
-            if (Component_get_transform) {
-                ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
-            } 
+
             // uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
             // if (m_LocalPlayerShow) {
             //
