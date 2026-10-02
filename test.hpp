@@ -100,7 +100,6 @@ void DrawEsp(ImDrawList* draw) {
   if (localPlayer) {
 
       Vector3 selfWorldPos = *(Vector3 *)((uintptr_t)localPlayer + ShowEntity_Position);
-      selfWorldPos.y -= 3.6f;
       Vector3 selfScreenPos = WorldToScreenPoint(selfWorldPos);
       ImVec2 self = ImVec2(gameW - selfScreenPos.x, selfScreenPos.y);
       if (selfScreenPos.z > 0) {
