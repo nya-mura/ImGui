@@ -136,21 +136,22 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance", &BattleManager_Instance);
         if (BattleManager_Instance) {
             ImGui::Text("BattleManager_Instance: 0x%lx", (uintptr_t)BattleManager_Instance);
+            
+            ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
+            ImGui::Text("Main offset: 0x%lx", Transform_get_position);
             uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
             if (m_LocalPlayerShow) {
                 ImGui::Text("Local Player: 0x%lx", m_LocalPlayerShow);
                 Vector3 selfPos = *(Vector3*)((uintptr_t)m_LocalPlayerShow + ShowEntity__Position);
                 Vector3 getPos = {getPos.x = 0.0f, getPos.y = 0.0f, getPos.z = 0.0f};
 
-                ImGui::Text("Tranform offset: 0x%lx", Component_get_transform);
-                ImGui::Text("Main offset: 0x%lx", Transform_get_position);
-                void* idk = get_transform((void*)m_LocalPlayerShow);
-                if (idk) {
-                    ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
-                    getPos = get_position(idk);
-                    ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
-
-                }
+                // void* idk = get_transform((void*)m_LocalPlayerShow);
+                // if (idk) {
+                //     ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
+                //     getPos = get_position(idk);
+                //     ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
+                //
+                // }
                 ImGui::Text("Original Self: %f %f %f", selfPos.x, selfPos.y, selfPos.z);
                 
                 Vector3 SelfPosW2S = WorldToScreen(selfPos);
