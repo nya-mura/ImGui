@@ -1,3 +1,10 @@
+#if defined(_MSC_VER) && defined(_M_IX86) // Windows x86 (32-bit)
+    #define MY_FASTCALL __fastcall
+#elif defined(__GNUC__) && defined(__i386__) // GCC/Clang x86 (32-bit)
+    #define MY_FASTCALL __attribute__((fastcall))
+#else
+    #define MY_FASTCALL // Empty for ARM, Android, x64, etc.
+#endif
 
 #include <cstdint>
 // #include "Modules/My/ToString.h"
@@ -172,9 +179,9 @@ void DrawEsp(ImDrawList* draw) {
                   continue;
               }
               int m_ID = *(int *)((uintptr_t)Pawn + EntityBase_m_ID);
-              if (MonsterToString(m_ID) == "") {
-                  continue;
-              }
+              // if (MonsterToString(m_ID) == "") {
+              //     continue;
+              // }
               // bool m_bSameCampType = *(bool *)((uintptr_t)Pawn + EntityBase_m_bSameCampType);
               // if (m_bSameCampType) {
               //     continue;
