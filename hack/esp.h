@@ -133,7 +133,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
-                        float hpPercent = (float)CurHP / (float)MaxHP;
+                        float hpPercent = (float)CurHp / (float)MaxHp;
                         float barWidth = 5.0f;
                         float gap = 3.0f;
                         ImVec2 hpBgStart = {vStart.x - barWidth - gap, vStart.y};
