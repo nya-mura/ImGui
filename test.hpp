@@ -8,12 +8,12 @@
 
 #include <cstdint>
 // #include "Modules/My/ToString.h"
-bool esp = false;
-bool line = false;
-bool box = false;
-bool health = false;
-bool monster = false;
-bool monhealth = false;
+bool esp = true;
+bool line = true;
+bool box = true;
+bool health = true;
+bool monster = true;
+bool monhealth = true;
 
 
 struct Vector2 {
