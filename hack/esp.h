@@ -3,9 +3,10 @@
 bool line = true;
 bool box = true;
 bool health = true;
+bool name = true;
 bool monBox = true;
 bool monHealth = true;
-
+bool monName = true;
 
 
 void DrawEsp(ImDrawList *drawlist, int width, int height) {
@@ -43,6 +44,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     int MaxHp = *(int*)((uintptr_t)Pawn + EntityBase_m_HpMax);
 
                     Vector3 position = *(Vector3*)((uintptr_t)Pawn + ShowEntity__Position);
+                    char* m_HeroName = *(MonoString **)((uintptr_t)Pawn + ShowPlayer_m_HeroName);
                     Vector3 RootPosW2S = WorldToScreen(position);
                     Vector2 RootPosVec2 = {screenWidth - RootPosW2S.x, RootPosW2S.y};
                     if (RootPosW2S.z > 0) {
@@ -62,7 +64,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         drawlist->AddLine(ImVec2(SelfPosVec2.x, SelfPosVec2.y), ImVec2(RootPosVec2.x, RootPosVec2.y), IM_COL32(205, 205, 205, 205), 1.7f);
                     }
 		            if (box) {
-                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
+                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y);
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
@@ -70,7 +72,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     }
 
                     if (health) {
-                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
+                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y);
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
@@ -85,6 +87,15 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         drawlist->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
                         drawlist->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220, 20, 60, 255));
                     }
+                    if (name) {
+                        if (m_HeroName) {
+                            char strName[64];
+                            snpritf("[ %s ]", m_HeroName.toString());
+                            ImVec2 textSize = ImGui::CalcTextSize2(strName, 0, ((float) screenHeight / 39.0f));
+                            drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 255, 255), strName);
+
+                        }
+                    }
                 }
             }
             monoList<void **> *m_ShowMonsters = *(monoList<void **> **)((uintptr_t)BattleManager_Instance + BattleManager_m_ShowMonsters);
@@ -95,8 +106,8 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         continue;
                     }
                     int m_ID = *(int*)((uintptr_t)Pawn + EntityBase_m_ID);
-                    const char* monster = monsterToString(m_ID);
-                    if (strcmp(monster, "NO") == 0) {
+                    const char* strName = monsterToString(m_ID);
+                    if (strcmp(strName, "NO") == 0) {
                         continue;
 
                     }
@@ -121,7 +132,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2.y - (screenHeight / 10.35))};
                     if (monBox) {
 
-                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
+                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y);
                         float boxWidth = boxHeight * 0.75;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
@@ -129,7 +140,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     }
                     if (monHealth) {
 
-                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y) * 1.75f;
+                        float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y);
                         float boxWidth = boxHeight * 0.75f;
                         ImVec2 vStart = {HeadPosVec2.x - (boxWidth / 2), HeadPosVec2.y};
                         ImVec2 vEnd = {vStart.x + boxWidth, vStart.y + boxHeight};
@@ -143,6 +154,11 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         ImVec2 hpFillEnd = hpBgEnd;
                         drawlist->AddRectFilled(hpBgStart, hpBgEnd, IM_COL32(40, 40, 40, 220));
                         drawlist->AddRectFilled(hpFillStart, hpFillEnd, IM_COL32(220,  20,  60, 255));
+                    }
+
+                    if (monName) {
+                        ImVec2 textSize = ImGui::CalcTextSize2(strName, 0, ((float) screenHeight / 39.0f));
+                        drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 100, 255), strName);
                     }
 
                     if (m_ID == 20022 && CurHp < MaxHp) {
