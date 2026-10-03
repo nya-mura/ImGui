@@ -116,10 +116,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
-    ImGui::Text("Android!");
-    ImGui::Checkbox("Click", &idk);
-    ImGui::SliderFloat("Value",&value,0.0f,100.0f);
-    ImGui::Text("Bye!");
+    ImGui::Text("Free Fire!");
+
     ImGui::Checkbox("Debug Menu", &debug);
     ImGui::End(); 
     if (debug) {
