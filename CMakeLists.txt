@@ -11,6 +11,7 @@ add_library(test SHARED
     ImGui/imgui_draw.cpp
     ImGui/imgui_tables.cpp
     ImGui/imgui_widgets.cpp
+    struct/MonoString.cpp
     # imgui/imgui_demo.cpp
 
     ImGui/backends/imgui_impl_android.cpp
