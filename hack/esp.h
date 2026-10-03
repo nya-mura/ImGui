@@ -44,7 +44,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     int MaxHp = *(int*)((uintptr_t)Pawn + EntityBase_m_HpMax);
 
                     Vector3 position = *(Vector3*)((uintptr_t)Pawn + ShowEntity__Position);
-                    char* m_HeroName = *(MonoString **)((uintptr_t)Pawn + ShowPlayer_m_HeroName);
+                    MonoString* m_HeroName = *(MonoString **)((uintptr_t)Pawn + ShowPlayer_m_HeroName);
                     Vector3 RootPosW2S = WorldToScreen(position);
                     Vector2 RootPosVec2 = {screenWidth - RootPosW2S.x, RootPosW2S.y};
                     if (RootPosW2S.z > 0) {
@@ -91,7 +91,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         if (m_HeroName) {
                             char strName[64];
                             snpritf("[ %s ]", m_HeroName.toString());
-                            ImVec2 textSize = ImGui::CalcTextSize2(strName, 0, ((float) screenHeight / 39.0f));
+                            ImVec2 textSize = ImGui::CalcTextSize(strName, 0, ((float) screenHeight / 39.0f));
                             drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 255, 255), strName);
 
                         }
@@ -157,7 +157,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     }
 
                     if (monName) {
-                        ImVec2 textSize = ImGui::CalcTextSize2(strName, 0, ((float) screenHeight / 39.0f));
+                        ImVec2 textSize = ImGui::CalcTextSize(strName, 0, ((float) screenHeight / 39.0f));
                         drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 100, 255), strName);
                     }
 
