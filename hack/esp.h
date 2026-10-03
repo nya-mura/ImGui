@@ -59,7 +59,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
 
                     Vector2 HeadPosVec2 = {RootPosVec2.x, (float)(RootPosVec2.y - (screenHeight / 10.35))};
 
-                    drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
+                    // drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
                     if (line) {                    
                         drawlist->AddLine(ImVec2(SelfPosVec2.x, SelfPosVec2.y), ImVec2(RootPosVec2.x, RootPosVec2.y), lineColor, 1.7f);
                     }
