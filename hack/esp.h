@@ -91,7 +91,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                         if (m_HeroName) {
                             char strName[64];
                             
-                            snprintf(strName, sizeof(strName), "[ %s ]", m_HeroName->toString());
+                            snprintf(strName, sizeof(strName), "[ %s ]", m_HeroName->toString().c_str());
                             ImVec2 textSize = ImGui::CalcTextSize(strName, 0, ((float) screenHeight / 39.0f));
                             drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 255, 255), strName);
 
