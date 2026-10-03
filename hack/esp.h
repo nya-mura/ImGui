@@ -61,7 +61,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
 
                     drawlist->AddCircleFilled(ImVec2(SelfPosVec2.x, SelfPosVec2.y), 5, IM_COL32(255, 0, 0, 255));
                     if (line) {                    
-                        drawlist->AddLine(ImVec2(SelfPosVec2.x, SelfPosVec2.y), ImVec2(RootPosVec2.x, RootPosVec2.y), IM_COL32(205, 205, 205, 205), 1.7f);
+                        drawlist->AddLine(ImVec2(SelfPosVec2.x, SelfPosVec2.y), ImVec2(RootPosVec2.x, RootPosVec2.y), lineColor, 1.7f);
                     }
 		            if (box) {
                         float boxHeight = abs(HeadPosVec2.y - RootPosVec2.y);
@@ -93,7 +93,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                             
                             snprintf(strName, sizeof(strName), "[ %s ]", m_HeroName->toString().c_str());
                             ImVec2 textSize = ImGui::CalcTextSize(strName, 0, ((float) screenHeight / 39.0f));
-                            drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 255, 255, 255), strName);
+                            drawlist->AddText(NULL, ((float) screenHeight / 39.0f), {RootPosVec2.x - (textSize.x / 2), RootPosVec2.y + 25}, IM_COL32(255, 111, 97, 255), strName);
 
                         }
                     }
@@ -171,7 +171,7 @@ void DrawEsp(ImDrawList *drawlist, int width, int height) {
                     if (m_ID == 2003 && CurHp < MaxHp) {
                         const char* strAlert = "ALERT!!! Turtle is under attack!";
                         ImVec2 textSize = ImGui::CalcTextSize(strAlert, 0, ((float)screenHeight / 31.0f));
-                        drawlist->AddText(NULL, ((float) screenHeight / 31.0f), {(float)(screenWidth / 2) - (textSize.x / 2), (float)(screenHeight - screenHeight) + (float)(screenHeight / 8.7f)}, IM_COL32(255, 255, 100, 255), strAlert);
+                        drawlist->AddText(NULL, ((float) screenHeight / 31.0f), {(float)(screenWidth / 2) - (textSize.x / 2), (float)(screenHeight - screenHeight) + (float)(screenHeight / 8.7f)}, IM_COL32(0, 191, 255, 255), strAlert);
                     }
                 }
             }
