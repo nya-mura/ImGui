@@ -11,6 +11,7 @@
 #include "ImGui/backends/imgui_impl_android.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
 #include "Dobby/dobby.h"
+#include "Viscount/Zygisk/zygisk.h"
 #include "ByNameModding/Includes.h"
 #include "ByNameModding/fake_dlfcn.h"
 #include "ByNameModding/Il2Cpp.h"
@@ -29,6 +30,13 @@
 #include "hack/class.h"
 #include "hack/esp.h"
 // #include "test.hpp"
+//
+#define targetPackageName com.mobiin.gp
+
+
+using zygisk::Api;
+using zygisk::AppSpecializeArgs;
+using zygisk::ServerSpecializeArgs;
 
 uintptr_t base = 0;
 
@@ -174,15 +182,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     return orig_eglSwapBuffers(dpy, surface);
 
 }
-void *sylphy(void*) {
+void *sylphy(const char*) {
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
     sleep(3);
 }
 
 
     Il2CppAttach("liblogic.so");
-
-    sleep(10);
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
@@ -194,9 +200,50 @@ void *sylphy(void*) {
     DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
     return nullptr;
 }
-__attribute__((constructor))
-void lib_main() {
-    pthread_t trixie;
-    pthread_create(&trixie, NULL, sylphy, NULL);
-    
-}
+// __attribute__((constructor))
+// void lib_main() {
+//     pthread_t trixie;
+//     pthread_create(&trixie, NULL, sylphy, NULL);
+//
+// }
+
+
+class ImGuiModMenu : public zygisk::ModuleBase {
+public:
+    void onLoad(Api *api, JNIEnv *env) override {
+        this->api = api;
+        this->env = env;
+    }
+
+    void preAppSpecialize(AppSpecializeArgs *args) override {
+        auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
+        auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
+        preSpecialize(package_name, app_data_dir);
+        env->ReleaseStringUTFChars(args->nice_name, package_name);
+        env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
+    }
+
+    void postAppSpecialize(const AppSpecializeArgs *) override {
+        if (enable_hack) {
+            std::thread hack_thread(sylphy, game_data_dir);
+            hack_thread.detach();
+        }
+    }
+	
+
+private:
+    Api *api;
+    JNIEnv *env;
+    bool enable_hack;
+    char *game_data_dir;
+
+    void preSpecialize(const char *package_name, const char *app_data_dir) {
+        if (strcmp(package_name, targetPackageName) == 0) {
+            enable_hack = true;
+            game_data_dir = new char[strlen(app_data_dir) + 1];
+            strcpy(game_data_dir, app_data_dir);
+        }
+    }
+};
+
+REGISTER_ZYGISK_MODULE(ImGuiModMenu)
