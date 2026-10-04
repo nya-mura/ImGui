@@ -31,7 +31,7 @@
 #include "hack/esp.h"
 // #include "test.hpp"
 //
-#define targetPackageName OBFUSCATE("com.mobiin.gp")
+#define targetPackageName "com.mobiin.gp"
 
 
 using zygisk::Api;
