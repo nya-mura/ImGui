@@ -189,6 +189,7 @@ void *sylphy(const char*) {
 
 
     Il2CppAttach("liblogic.so");
+    sleep(10);
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
