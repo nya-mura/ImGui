@@ -204,12 +204,13 @@ void *sylphy(const char*) {
     LOGI("DobbyHook returned");
     return nullptr;
 }
-// __attribute__((constructor))
-// void lib_main() {
-//     pthread_t trixie;
-//     pthread_create(&trixie, NULL, sylphy, NULL);
-//
-// }
+__attribute__((constructor))
+void lib_main() {
+    LOGI("Loaded started main");
+    pthread_t trixie;
+    pthread_create(&trixie, NULL, sylphy, NULL);
+
+}
 
 
 class ImGuiModMenu : public zygisk::ModuleBase {
