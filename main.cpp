@@ -158,10 +158,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         ImGui::Text("Debug information");
         ImGui::Text("FPS %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Base Adress: 0x%lx\n", base);
-        void* BattleManager_Instance = nullptr;
+        ImGui::End();
 
         }
-        ImGui::End();
+        
     
     ImGui::Render();
     
