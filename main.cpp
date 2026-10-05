@@ -159,7 +159,7 @@ void *sylphy(const char*) {
     uintptr_t base = 0;
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
         LOGI("libil2cpp.so not found");
-    sleep(4);
+        sleep(3);
     }
     LOGI("libil2cpp.so found: %p", (void*)base);
 
