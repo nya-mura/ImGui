@@ -159,28 +159,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         ImGui::Text("FPS %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Base Adress: 0x%lx\n", base);
         void* BattleManager_Instance = nullptr;
-        Il2CppGetStaticFieldValue("Assembly-CSharp.dll", "", "BattleManager", "Instance", &BattleManager_Instance);
-        if (BattleManager_Instance) {
-            ImGui::Text("BattleManager_Instance: 0x%lx", (uintptr_t)BattleManager_Instance);
-            uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
 
-            // uintptr_t m_LocalPlayerShow = *(uintptr_t*)((uintptr_t)BattleManager_Instance + BattleManager_m_LocalPlayerShow);
-            // if (m_LocalPlayerShow) {
-            //
-            //
-            //
-            //     // void* idk = get_transform((void*)m_LocalPlayerShow);
-            //     // if (idk) {
-            //     //     ImGui::Text("player tranform: 0x%lx", (uintptr_t)idk);
-            //     //     getPos = get_position(idk);
-            //     //     ImGui::Text("Mine Location %f %f %f", getPos.x, getPos.y, getPos.z);
-            //     //
-            //     // }
-            //     // ImGui::Text("Original Self: %f %f %f", selfPos.x, selfPos.y, selfPos.z);
-            //     //
-            //     // Vector3 SelfPosW2S = WorldToScreen(selfPos);
-            //     // ImGui::Text("Player Pos: %f %f %f",SelfPosW2S.x, SelfPosW2S.y, SelfPosW2S.z );
-            // }
         }
         ImGui::End();
     }
@@ -196,9 +175,12 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 }
 void *sylphy(const char*) {
     LOGI("sylphy started");
+    LOGI("sylphy waiting for liblogic.so");
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
-    sleep(3);
+        LOGI("liblogic.so not found");
+        sleep(3);
     }
+
 
     LOGI("liblogic.so found: %p", (void*)base);
 
