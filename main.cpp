@@ -20,6 +20,8 @@
 #include <unistd.h>
 #include "Viscount/memory.h"
 
+#define targetPackageName "com.dts.freefireth"
+
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
 using zygisk::ServerSpecializeArgs;
