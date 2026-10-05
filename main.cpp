@@ -175,7 +175,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 
-void *sylphy(const char*) {
+void *sylphy(void*) {
     LOGI("sylphy started");
     LOGI("sylphy waiting for liblogic.so");
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
@@ -212,50 +212,50 @@ void lib_main() {
 
 }
 
-
-class ImGuiModMenu : public zygisk::ModuleBase {
-public:
-    void onLoad(Api *api, JNIEnv *env) override {
-        this->api = api;
-        this->env = env;
-
-        LOGI("onLoad");
-    }
-
-    void preAppSpecialize(AppSpecializeArgs *args) override {
-        auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
-        auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
-
-        LOGI("preAppSpecialize package=%s", package_name);
-        preSpecialize(package_name, app_data_dir);
-        LOGI("enable_hack=%d", enable_hack);
-        env->ReleaseStringUTFChars(args->nice_name, package_name);
-        env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
-    }
-
-    void postAppSpecialize(const AppSpecializeArgs *) override {
-        LOGI("postAppSpecialize enable_hack=%d", enable_hack);
-        if (enable_hack) {
-            LOGI("starting hack thread");
-            std::thread hack_thread(sylphy, game_data_dir);
-            hack_thread.detach();
-        }
-    }
-	
-
-private:
-    Api *api;
-    JNIEnv *env;
-    bool enable_hack;
-    char *game_data_dir;
-
-    void preSpecialize(const char *package_name, const char *app_data_dir) {
-        if (strcmp(package_name, targetPackageName) == 0) {
-            enable_hack = true;
-            game_data_dir = new char[strlen(app_data_dir) + 1];
-            strcpy(game_data_dir, app_data_dir);
-        }
-    }
-};
-
-REGISTER_ZYGISK_MODULE(ImGuiModMenu)
+//
+// class ImGuiModMenu : public zygisk::ModuleBase {
+// public:
+//     void onLoad(Api *api, JNIEnv *env) override {
+//         this->api = api;
+//         this->env = env;
+//
+//         LOGI("onLoad");
+//     }
+//
+//     void preAppSpecialize(AppSpecializeArgs *args) override {
+//         auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
+//         auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
+//
+//         LOGI("preAppSpecialize package=%s", package_name);
+//         preSpecialize(package_name, app_data_dir);
+//         LOGI("enable_hack=%d", enable_hack);
+//         env->ReleaseStringUTFChars(args->nice_name, package_name);
+//         env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
+//     }
+//
+//     void postAppSpecialize(const AppSpecializeArgs *) override {
+//         LOGI("postAppSpecialize enable_hack=%d", enable_hack);
+//         if (enable_hack) {
+//             LOGI("starting hack thread");
+//             std::thread hack_thread(sylphy, game_data_dir);
+//             hack_thread.detach();
+//         }
+//     }
+//
+//
+// private:
+//     Api *api;
+//     JNIEnv *env;
+//     bool enable_hack;
+//     char *game_data_dir;
+//
+//     void preSpecialize(const char *package_name, const char *app_data_dir) {
+//         if (strcmp(package_name, targetPackageName) == 0) {
+//             enable_hack = true;
+//             game_data_dir = new char[strlen(app_data_dir) + 1];
+//             strcpy(game_data_dir, app_data_dir);
+//         }
+//     }
+// };
+//
+// REGISTER_ZYGISK_MODULE(ImGuiModMenu)
