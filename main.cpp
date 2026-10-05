@@ -36,7 +36,7 @@
 #include "hack/esp.h"
 // #include "test.hpp"
 //
-#define targetPackageName "com.mobiin.gp"
+#define targetPackageName "com.mobiin.gp:UnityKillsMe"
 
 
 using zygisk::Api;
