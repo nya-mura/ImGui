@@ -17,6 +17,11 @@
 #include "ByNameModding/Il2Cpp.h"
 #include "struct/MonoString.h"
 
+#include <android/log.h>
+
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "MLBB", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "MLBB", __VA_ARGS__)
+
 
 
 #include <pthread.h>
@@ -110,6 +115,13 @@ void touch(bool* mouse) {
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
+    static bool first = true;
+
+        if (first) {
+            first = false;
+            LOGI("eglSwapBuffers HOOK CALLED");
+        }
+        
     static bool g_Initialized = false;
     static bool should_clear_mouse_pos = false;
     if (!g_Initialized) {
@@ -183,12 +195,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(const char*) {
+    LOGI("sylphy started");
     while ((base = GetBaseAdress("liblogic.so")) == 0) {
     sleep(3);
-}
+    }
 
+    LOGI("liblogic.so found: %p", (void*)base);
 
     Il2CppAttach("liblogic.so");
+
+    LOGI("Il2CppAttach done");
     sleep(10);
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
@@ -196,9 +212,12 @@ void *sylphy(const char*) {
     }
     void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
+        LOGE("dlsym eglSwapBuffers failed: %s", dlerror());
         return nullptr;
     }
-    DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
+    LOGI("eglSwapBuffers=%p", swap);
+    DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
+    LOGI("DobbyHook returned");
     return nullptr;
 }
 // __attribute__((constructor))
@@ -214,18 +233,25 @@ public:
     void onLoad(Api *api, JNIEnv *env) override {
         this->api = api;
         this->env = env;
+
+        LOGI("onLoad");
     }
 
     void preAppSpecialize(AppSpecializeArgs *args) override {
         auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
         auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
+
+        LOGI("preAppSpecialize package=%s", package_name);
         preSpecialize(package_name, app_data_dir);
+        LOGI("enable_hack=%d", enable_hack);
         env->ReleaseStringUTFChars(args->nice_name, package_name);
         env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
     }
 
     void postAppSpecialize(const AppSpecializeArgs *) override {
+        LOGI("postAppSpecialize enable_hack=%d", enable_hack);
         if (enable_hack) {
+            LOGI("starting hack thread");
             std::thread hack_thread(sylphy, game_data_dir);
             hack_thread.detach();
         }
