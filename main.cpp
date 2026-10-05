@@ -19,6 +19,11 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+#include <android/log.h>
+
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "MLBB", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "MLBB", __VA_ARGS__)
+
 
 #define targetPackageName "com.dts.freefireth"
 
@@ -146,7 +151,7 @@ void *sylphy(void*) {
 
     uintptr_t base = 0;
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
-    sleep(1);
+    sleep(4);
 }
 
 
