@@ -11,6 +11,13 @@
 #include "ByNameModding/Includes.h"
 #include "ByNameModding/fake_dlfcn.h"
 #include "ByNameModding/Il2Cpp.h"
+#include <android/log.h>
+
+
+
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "SURF", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "SURF", __VA_ARGS__)
+
 
 
 
@@ -139,28 +146,34 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(void*) {
+    LOGI("On Thread");
 
     uintptr_t base = 0;
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
-    sleep(3 );
-}
+        LOGE("Not found");
+        sleep(3 );
+    }
+    LOGI("Found lib 0x%lx", base);
 
 
     Il2CppAttach("libil2cpp.so");
-    sleep(10);
+    LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
     }
-    void *swap = dlsym(egl, "eglSwapBuffers");
+   void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
         return nullptr;
     }
+    LOGI("Done");
     DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
+    LOGI("Return Dobby Hook");
     return nullptr;
 }
 __attribute__((constructor))
 void lib_main() {
+    LOGI("Staeted main");
     pthread_t trixie;
     pthread_create(&trixie, NULL, sylphy, NULL);
     
