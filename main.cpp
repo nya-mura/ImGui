@@ -147,7 +147,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     return orig_eglSwapBuffers(dpy, surface);
 
 }
-void *sylphy(void*) {
+void *sylphy(const char*) {
 
     uintptr_t base = 0;
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
