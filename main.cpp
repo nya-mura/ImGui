@@ -162,7 +162,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
         }
         ImGui::End();
-    }
+    
     ImGui::Render();
     
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -172,7 +172,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     }
     return orig_eglSwapBuffers(dpy, surface);
 
+
 }
+
 void *sylphy(const char*) {
     LOGI("sylphy started");
     LOGI("sylphy waiting for liblogic.so");
