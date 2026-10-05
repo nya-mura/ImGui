@@ -102,6 +102,12 @@ void touch(bool* mouse) {
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
+    static bool first = true;
+
+    if (first) {
+        first = false;
+        LOGI("eglSwapBuffers HOOK CALLED");
+    }
     static bool g_Initialized = false;
     static bool should_clear_mouse_pos = false;
     if (!g_Initialized) {
@@ -148,14 +154,17 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(const char*) {
-
+    LOGI("sylphy started");
+    LOGI("sylphy waiting for libil2cpp.so");
     uintptr_t base = 0;
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
+        LOGI("libil2cpp.so not found");
     sleep(4);
     }
-
+    LOGI("libil2cpp.so found: %p", (void*)base);
 
     Il2CppAttach("libil2cpp.so");
+    LOGI("Il2CppAttach done");
     sleep(10);
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
@@ -163,9 +172,12 @@ void *sylphy(const char*) {
     }
     void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
+        LOGE("dlsym eglSwapBuffers failed: %s", dlerror());
         return nullptr;
     }
+    LOGI("eglSwapBuffers=%p", swap);
     DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
+    LOGI("DobbyHook returned");
     return nullptr;
 }
 // __attribute__((constructor))
