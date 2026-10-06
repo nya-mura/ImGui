@@ -3,6 +3,7 @@
 #include <bits/pthread_types.h>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <dlfcn.h>
 #include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_android.h"
@@ -67,10 +68,16 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    int (*TouchCount)(void*) = (int (*)(void*)) (Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0));
+
+    void* Get_TouchCount = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+    void* Get_Touch = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+    if (Get_TouchCount == NULL && Get_Touch == NULL) {
+       return;
+    }
+    int (*TouchCount)(void*) = (int (*)(void*))Get_TouchCount;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0) {
-        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int)) (Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1))) (0);
+        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int))(Get_Touch)) (0); 
         float reverseY = io.DisplaySize.y - touch.m_Position.fields.y;
 
         switch (touch.m_Phase) {
