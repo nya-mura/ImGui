@@ -69,9 +69,11 @@ struct UnityEngine_Touch_Fields {
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
     LOGI("reach touch");
+    static void* Get_TouchCount = NULL;
+    static void* Get_Touch = NULL;
 
-    void* Get_TouchCount = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
-    void* Get_Touch = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+    Get_TouchCount = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+    Get_Touch = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
     LOGI("Put");
     if (Get_TouchCount == NULL || Get_Touch == NULL) {
         io.MouseDown[0] = false;
