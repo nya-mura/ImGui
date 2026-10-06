@@ -15,8 +15,8 @@
 
 
 
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "SURF", __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "SURF", __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 
 
 
@@ -149,14 +149,14 @@ void *sylphy(void*) {
     LOGI("On Thread");
 
     uintptr_t base = 0;
-    while ((base = GetBaseAdress("liblogic.so")) == 0) {
+    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
         LOGE("Not found");
         sleep(3 );
     }
     LOGI("Found lib 0x%lx", base);
 
 
-    Il2CppAttach("liblogic.so");
+    Il2CppAttach("libil2cpp.so");
     LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
