@@ -71,9 +71,12 @@ void touch(bool* mouse) {
 
     void* Get_TouchCount = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
     void* Get_Touch = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
-    if (Get_TouchCount == NULL && Get_Touch == NULL) {
-       return;
+    if (Get_TouchCount == NULL || Get_Touch == NULL) {
+        io.MouseDown[0] = false;
+        LOGI("Return fron Touch");
+        return;
     }
+    LOGI("Done with touch");
     int (*TouchCount)(void*) = (int (*)(void*))Get_TouchCount;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0) {
