@@ -28,6 +28,10 @@
 #include <unistd.h>
 #include "Viscount/memory.h"
 
+static bool IsSafeMethodPtr(void* ptr) {
+    return ptr != nullptr && (uintptr_t)ptr > 0x1000;
+}
+
 bool clearMousePos = true, setup = false;
 struct UnityEngine_Vector2_Fields {
     float x;
@@ -68,30 +72,22 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    LOGI("reach touch");
-    static void* Get_TouchCount = NULL;
-    static void* Get_Touch = NULL;
-    static bool touchInitialized = false;
-
-    if (!touchInitialized) {
-
-        Get_TouchCount = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
-        Get_Touch = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
-    }
-    LOGI("Put");
-    if (Get_TouchCount == NULL || Get_Touch == NULL) {
+    void* touchCountPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+    if (!IsSafeMethodPtr(touchCountPtr)) {
         io.MouseDown[0] = false;
-        LOGI("Return fron Touch");
         return;
     }
-    touchInitialized = true;
-    LOGI("Done with touch");
-    LOGI("0x%lx 0x%lx", (uintptr_t)Get_TouchCount, (uintptr_t)Get_Touch);
 
-    int (*TouchCount)(void*) = (int (*)(void*))Get_TouchCount;
+    int (*TouchCount)(void*) = (int (*)(void*)) (touchCountPtr);
     int touchCount = TouchCount(nullptr);
-    if (touchCount > 0) {
-        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int))(Get_Touch)) (0); 
+    if (touchCount > 0 && touchCount < 16) {
+        void* getTouchPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+        if (!IsSafeMethodPtr(getTouchPtr)) {
+            io.MouseDown[0] = false;
+            return;
+        }
+
+        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int)) (getTouchPtr)) (0);
         float reverseY = io.DisplaySize.y - touch.m_Position.fields.y;
 
         switch (touch.m_Phase) {
