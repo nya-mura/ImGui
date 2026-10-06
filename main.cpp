@@ -149,14 +149,14 @@ void *sylphy(void*) {
     LOGI("On Thread");
 
     uintptr_t base = 0;
-    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
+    while ((base = GetBaseAdress("liblogic.so")) == 0) {
         LOGE("Not found");
         sleep(3 );
     }
     LOGI("Found lib 0x%lx", base);
 
 
-    Il2CppAttach("libil2cpp.so");
+    Il2CppAttach("liblogic.so");
     LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
