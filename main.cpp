@@ -174,7 +174,7 @@ void *sylphy(void*) {
 
 
     Il2CppAttach("libil2cpp.so");
-    sleep(30);
+    sleep(60);
     LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
