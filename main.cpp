@@ -79,6 +79,8 @@ void touch(bool* mouse) {
         return;
     }
     LOGI("Done with touch");
+    LOGI("0x%lx 0x%lx", (uintptr_t)Get_TouchCount, (uintptr_t)Get_Touch);
+
     int (*TouchCount)(void*) = (int (*)(void*))Get_TouchCount;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0) {
