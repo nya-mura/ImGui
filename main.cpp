@@ -169,10 +169,11 @@ void *sylphy(void*) {
         sleep(4);
     }
     LOGI("Found lib 0x%lx", base);
-
-
+    LOGI("Before Il2CppAttach");
     Il2CppAttach("libil2cpp.so");
-    sleep(60);
+    LOGI("After Il2CppAttach");
+
+    sleep(10);
     LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
