@@ -20,7 +20,7 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 
 
-
+#define libName "liblogic.so"
 
 #include <pthread.h>
 #include <jni.h>
@@ -164,13 +164,13 @@ void *sylphy(void*) {
     LOGI("On Thread");
 
     uintptr_t base = 0;
-    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
+    while ((base = GetBaseAdress(libName)) == 0) {
         LOGE("Not found");
         sleep(4);
     }
     LOGI("Found lib 0x%lx", base);
     LOGI("Before Il2CppAttach");
-    Il2CppAttach("libil2cpp.so");
+    Il2CppAttach(libName);
     LOGI("After Il2CppAttach");
 
     sleep(10);
