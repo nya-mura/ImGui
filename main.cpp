@@ -20,7 +20,7 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 
 
-#define libName "liblogic.so"
+#define libName "libil2cpp.so"
 
 #include <pthread.h>
 #include <jni.h>
@@ -114,13 +114,25 @@ void touch(bool* mouse) {
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
+
+    static bool logged = false;
+
+    if (!logged) {
+        logged = true;
+
+        LOGI("eglSwapBuffers HOOK REACHED");
+        LOGI("EGL context: %p", (void*)eglGetCurrentContext());
+        LOGI("GL version: %s", glGetString(GL_VERSION));
+    }
     static bool g_Initialized = false;
     static bool should_clear_mouse_pos = false;
     if (!g_Initialized) {
+        LOGI("Creating ImGui context");
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr;
-        ImGui_ImplOpenGL3_Init("#version 300 es");
+        bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
+        LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
         ImGui::GetStyle().ScaleAllSizes(2.0f);
         g_Initialized = true;
@@ -179,12 +191,18 @@ void *sylphy(void*) {
     if (!egl) {
         return nullptr;
     }
-   void *swap = dlsym(egl, "eglSwapBuffers");
+    LOGI("egl address: %p", egl);
+            
+    void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
         return nullptr;
     }
     LOGI("Done");
-    DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
+    LOGI("eglSwapBuffers address: %p", swap);
+
+    int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
+    LOGI("DobbyHook result: %d", result);
+    LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
     LOGI("Return Dobby Hook");
     return nullptr;
 }
