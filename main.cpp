@@ -4,6 +4,7 @@
 #include <bits/pthread_types.h>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 #include <dlfcn.h>
 #include "ImGui/imgui.h"
@@ -28,9 +29,11 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+uintptr_t touchCountPtr = (uintptr_t)Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+uintptr_t getTouchPtr = (uintptr_t)Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
 
-static bool IsSafeMethodPtr(void* ptr) {
-    return ptr != nullptr && (uintptr_t)ptr > 0x1000;
+static bool IsSafeMethodPtr(uintptr_t ptr) {
+    return ptr != 0 && ptr > 0x1000;
 }
 
 bool clearMousePos = true, setup = false;
@@ -73,16 +76,16 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    void* touchCountPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+
     if (!IsSafeMethodPtr(touchCountPtr)) {
         io.MouseDown[0] = false;
         return;
     }
 
-    int (*TouchCount)(void*) = (int (*)(void*)) (touchCountPtr);
+    int (*TouchCount)(void*) = (int (*)(void*))touchCountPtr;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0 && touchCount < 16) {
-        void* getTouchPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+
         if (!IsSafeMethodPtr(getTouchPtr)) {
             io.MouseDown[0] = false;
             return;
@@ -148,7 +151,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    // touch(&should_clear_mouse_pos);
+    touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -198,11 +201,22 @@ void *sylphy(void*) {
     }
     LOGI("Done");
     LOGI("eglSwapBuffers address: %p", swap);
+    if (touchCountPtr) {
+        LOGI("touchCountPtr: 0x%lx", touchCountPtr);
+    }
+    else {
+        LOGI("touchCountPtr empty");
+    }
+    if (getTouchPtr) {
+        LOGI("get_touchCount: 0x%lx", getTouchPtr);
+    }
 
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
     LOGI("DobbyHook result: %d", result);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
     LOGI("Return Dobby Hook");
+
+    
     return nullptr;
 }
 __attribute__((constructor))
