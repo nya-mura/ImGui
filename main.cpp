@@ -1,8 +1,10 @@
+
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <bits/pthread_types.h>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <dlfcn.h>
 #include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_android.h"
@@ -11,26 +13,25 @@
 #include "ByNameModding/Includes.h"
 #include "ByNameModding/fake_dlfcn.h"
 #include "ByNameModding/Il2Cpp.h"
-#include "Viscount/Zygisk/zygisk.h"
+#include <android/log.h>
 
+
+
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
+
+
+#define libName "libil2cpp.so"
 
 #include <pthread.h>
 #include <jni.h>
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
-#include <android/log.h>
 
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "MLBB", __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "MLBB", __VA_ARGS__)
-
-
-#define targetPackageName "com.dts.freefireth"
-
-using zygisk::Api;
-using zygisk::AppSpecializeArgs;
-using zygisk::ServerSpecializeArgs;
-
+static bool IsSafeMethodPtr(void* ptr) {
+    return ptr != nullptr && (uintptr_t)ptr > 0x1000;
+}
 
 bool clearMousePos = true, setup = false;
 struct UnityEngine_Vector2_Fields {
@@ -72,10 +73,22 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    int (*TouchCount)(void*) = (int (*)(void*)) (Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0));
+    void* touchCountPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+    if (!IsSafeMethodPtr(touchCountPtr)) {
+        io.MouseDown[0] = false;
+        return;
+    }
+
+    int (*TouchCount)(void*) = (int (*)(void*)) (touchCountPtr);
     int touchCount = TouchCount(nullptr);
-    if (touchCount > 0) {
-        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int)) (Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1))) (0);
+    if (touchCount > 0 && touchCount < 16) {
+        void* getTouchPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+        if (!IsSafeMethodPtr(getTouchPtr)) {
+            io.MouseDown[0] = false;
+            return;
+        }
+
+        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int)) (getTouchPtr)) (0);
         float reverseY = io.DisplaySize.y - touch.m_Position.fields.y;
 
         switch (touch.m_Phase) {
@@ -102,19 +115,25 @@ void touch(bool* mouse) {
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
-    static bool first = true;
 
-    if (first) {
-        first = false;
-        LOGI("eglSwapBuffers HOOK CALLED");
+    static bool logged = false;
+
+    if (!logged) {
+        logged = true;
+
+        LOGI("eglSwapBuffers HOOK REACHED");
+        LOGI("EGL context: %p", (void*)eglGetCurrentContext());
+        LOGI("GL version: %s", glGetString(GL_VERSION));
     }
     static bool g_Initialized = false;
     static bool should_clear_mouse_pos = false;
     if (!g_Initialized) {
+        LOGI("Creating ImGui context");
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr;
-        ImGui_ImplOpenGL3_Init("#version 300 es");
+        bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
+        LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
         ImGui::GetStyle().ScaleAllSizes(2.0f);
         g_Initialized = true;
@@ -129,14 +148,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    touch(&should_clear_mouse_pos);
+    // touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui");
-    ImGui::Text("Free Fire");
+    ImGui::Text("Android!!");
+
     ImGui::Checkbox("Debug Menu", &debug);
-    ImGui::End(); 
+    ImGui::End();
     if (debug) {
         ImGui::Begin("Debug");
         ImGui::Text("Debug information");
@@ -144,7 +164,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         ImGui::End();
     }
     ImGui::Render();
-    
+
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     if (should_clear_mouse_pos) {
         io.MousePos = ImVec2(-1, -1);
@@ -154,85 +174,41 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
 }
 void *sylphy(void*) {
-    LOGI("sylphy started");
-    LOGI("sylphy waiting for libil2cpp.so");
-    uintptr_t base = 0;
-    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
-        LOGI("libil2cpp.so not found");
-        sleep(3);
-    }
-    LOGI("libil2cpp.so found: %p", (void*)base);
+    LOGI("On Thread");
 
-    Il2CppAttach("libil2cpp.so");
-    LOGI("Il2CppAttach done");
-    sleep(10);
+    uintptr_t base = 0;
+    while ((base = GetBaseAdress(libName)) == 0) {
+        LOGE("Not found");
+        sleep(4);
+    }
+    LOGI("Found lib 0x%lx", base);
+    LOGI("Before Il2CppAttach");
+    Il2CppAttach(libName);
+    LOGI("After Il2CppAttach");
+    LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
     }
+    LOGI("egl address: %p", egl);
+
     void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
-        LOGE("dlsym eglSwapBuffers failed: %s", dlerror());
         return nullptr;
     }
-    LOGI("eglSwapBuffers=%p", swap);
-    DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers); 
-    LOGI("DobbyHook returned");
+    LOGI("Done");
+    LOGI("eglSwapBuffers address: %p", swap);
+
+    int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
+    LOGI("DobbyHook result: %d", result);
+    LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
+    LOGI("Return Dobby Hook");
     return nullptr;
 }
 __attribute__((constructor))
 void lib_main() {
+    LOGI("Staeted main");
     pthread_t trixie;
     pthread_create(&trixie, NULL, sylphy, NULL);
 
 }
-// Zygisk
-//
-//
-// class ImGuiModMenu : public zygisk::ModuleBase {
-// public:
-//     void onLoad(Api *api, JNIEnv *env) override {
-//         this->api = api;
-//         this->env = env;
-//
-//         LOGI("onLoad");
-//     }
-//
-//     void preAppSpecialize(AppSpecializeArgs *args) override {
-//         auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
-//         auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
-//
-//         LOGI("preAppSpecialize package=%s", package_name);
-//         preSpecialize(package_name, app_data_dir);
-//         LOGI("enable_hack=%d", enable_hack);
-//         env->ReleaseStringUTFChars(args->nice_name, package_name);
-//         env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
-//     }
-//
-//     void postAppSpecialize(const AppSpecializeArgs *) override {
-//         LOGI("postAppSpecialize enable_hack=%d", enable_hack);
-//         if (enable_hack) {
-//             LOGI("starting hack thread");
-//             std::thread hack_thread(sylphy, game_data_dir);
-//             hack_thread.detach();
-//         }
-//     }
-//
-//
-// private:
-//     Api *api;
-//     JNIEnv *env;
-//     bool enable_hack;
-//     char *game_data_dir;
-//
-//     void preSpecialize(const char *package_name, const char *app_data_dir) {
-//         if (strcmp(package_name, targetPackageName) == 0) {
-//             enable_hack = true;
-//             game_data_dir = new char[strlen(app_data_dir) + 1];
-//             strcpy(game_data_dir, app_data_dir);
-//         }
-//     }
-// };
-//
-// REGISTER_ZYGISK_MODULE(ImGuiModMenu)
-
