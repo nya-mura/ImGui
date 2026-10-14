@@ -3,7 +3,7 @@ name: Build Android Library
 
 on:
   push:
-    branches: ["main"]
+    branches: ["fwd"]
   workflow_dispatch:
 
 jobs:

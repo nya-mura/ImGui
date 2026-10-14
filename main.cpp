@@ -13,6 +13,7 @@
 #include "ByNameModding/fake_dlfcn.h"
 #include "ByNameModding/Il2Cpp.h"
 #include <android/log.h>
+#include <jni.h>
 
 
 
@@ -210,4 +211,10 @@ void lib_main() {
     pthread_t trixie;
     pthread_create(&trixie, NULL, sylphy, NULL);
     
+}
+
+extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
+    JNIEnv *env;
+    vm->GetEnv((void **)&env, JNI_VERSION_1_6);
+    return JNI_VERSION_1_6;
 }
