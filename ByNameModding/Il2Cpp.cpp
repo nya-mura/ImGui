@@ -2,6 +2,7 @@
 #include "Il2Cpp.h"
 #include "obfuscate.h"
 #include <android/log.h>
+#include <dlfcn.h>
 #define targetLib OBFUSCATE("libil2cpp.so")
 #define g_LogTag OBFUSCATE("IL2CPP-LOGGER")
 
@@ -247,7 +248,7 @@ void IL2Cpp::Il2CppAttach() {
 	void *IL2Cpp_Handle = nullptr;
 	
 	while (!IL2Cpp_Handle) {
-		IL2Cpp_Handle = dlopen(targetLib, 4);
+		IL2Cpp_Handle = dlopen(targetLib, RTLD_NOW);
 		sleep(1);
 	}
 	il2cpp_domain_get_assemblies = (void **(*)(const void *, size_t *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_domain_get_assemblies"));
