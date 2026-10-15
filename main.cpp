@@ -136,11 +136,11 @@ void *sylphy(void*) {
     LOGI("Done");
 
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
-    int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
+    // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
     LOGI("DobbyHook result: %d", result);
-    LOGI("DobbyHook result1: %d", result1);
+    // LOGI("DobbyHook result1: %d", result1);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
-    LOGI("Input Fucntion: %p", (void*)origInput);
+    // LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
 
     
