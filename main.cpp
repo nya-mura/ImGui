@@ -112,23 +112,23 @@ void *sylphy(void*) {
     Il2CppAttach(libName);
     LOGI("After Il2CppAttach");
     LOGI("Attach");
-    void *egl = dlopen("libEGL.so", RTLD_NOW);
+    void *egl = fake_dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return NULL;
     }
     LOGI("egl address: %p", egl);
 
-    void *swap = dlsym(egl, "eglSwapBuffers");
+    void *swap = fake_dlsym(egl, "eglSwapBuffers");
     if (!swap) {
         return NULL;
     }
     LOGI("eglSwapBuffers address: %p", swap);
-    void* handle_input = dlopen("libinput.so", RTLD_NOW);
+    void* handle_input = fake_dlopen("libinput.so", RTLD_NOW);
     if (!handle_input) {
         return NULL;
     }
     LOGI("handle_input address: %p", handle_input);
-    void* input = dlsym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
+    void* input = fake_dlsym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
     if (!input) {
         return  NULL;
     }
