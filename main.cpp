@@ -201,16 +201,6 @@ void *sylphy(void*) {
     }
     LOGI("Done");
     LOGI("eglSwapBuffers address: %p", swap);
-    if (touchCountPtr) {
-        LOGI("touchCountPtr: 0x%lx", touchCountPtr);
-    }
-    else {
-        LOGI("touchCountPtr empty");
-    }
-    if (getTouchPtr) {
-        LOGI("get_touchCount: 0x%lx", getTouchPtr);
-    }
-
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
     LOGI("DobbyHook result: %d", result);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
