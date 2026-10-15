@@ -128,7 +128,7 @@ void *sylphy(void*) {
         return NULL;
     }
     LOGI("handle_input address: %p", handle_input);
-    void* input = xdl_sym(handle_input, "_ZN7android13InputConsumer7consumeEPNS_26InputEventFactoryInterfaceEblPjPPNS_10InputEventE", NULL);
+    void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
     if (!input) {
         return  NULL;
     }
@@ -136,12 +136,13 @@ void *sylphy(void*) {
     LOGI("Done");
 
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
-    // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
+    int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
     LOGI("DobbyHook result: %d", result);
-    // LOGI("DobbyHook result1: %d", result1);
+    LOGI("DobbyHook result1: %d", result1);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
-    // LOGI("Input Fucntion: %p", (void*)origInput);
+    LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
+
 
     
     return nullptr;
