@@ -1,3 +1,4 @@
+#include "Includes.h"
 #include "Il2Cpp.h"
 #include "obfuscate.h"
 #include <android/log.h>
@@ -159,12 +160,53 @@ UTF32 surrogate_to_utf32(UTF16 high, UTF16 low) {
     return (high << 10) + low - 0x35fdc00;
 }
 
-const char* utf16_to_utf8(const UTF16* source, size_t len) {
-    std::u16string s(source, source + len);
-    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-    return convert.to_bytes(s).c_str();
-}
+// const char* utf16_to_utf8(const UTF16* source, size_t len) {
+//     std::u16string s(source, source + len);
+//     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+//     return convert.to_bytes(s).c_str();
+// }
 
+
+const char* utf16_to_utf8(const UTF16* source, size_t len) {
+    // Convert UTF-16 (source) to UTF-8 string. Return pointer to thread-local storage.
+    std::string out;
+    out.reserve(len * 3 + 1);
+
+    for (size_t i = 0; i < len; ++i) {
+        uint32_t codepoint = static_cast<uint16_t>(source[i]);
+
+        // handle surrogate pair
+        if (is_high_surrogate(source[i]) && (i + 1) < len && is_low_surrogate(source[i + 1])) {
+            uint16_t high = source[i];
+            uint16_t low = source[++i]; // consume low surrogate
+            // convert pair to codepoint
+            codepoint = ((static_cast<uint32_t>(high) - 0xD800u) << 10)
+                        + (static_cast<uint32_t>(low) - 0xDC00u)
+                        + 0x10000u;
+        }
+
+        // encode UTF-8
+        if (codepoint <= 0x7F) {
+            out.push_back(static_cast<char>(codepoint));
+        } else if (codepoint <= 0x7FF) {
+            out.push_back(static_cast<char>(0xC0 | (codepoint >> 6)));
+            out.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        } else if (codepoint <= 0xFFFF) {
+            out.push_back(static_cast<char>(0xE0 | (codepoint >> 12)));
+            out.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        } else {
+            out.push_back(static_cast<char>(0xF0 | (codepoint >> 18)));
+            out.push_back(static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        }
+    }
+
+    static thread_local std::string tls;
+    tls = std::move(out);
+    return tls.c_str();
+}
 const wchar_t* utf16_to_utf32(const UTF16* source, size_t len) {
 	auto output = new UTF32[len + 1];
 

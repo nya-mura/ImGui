@@ -22,5 +22,8 @@
 #include <fcntl.h>
 
 #include <jni.h>
-
+#include <dlfcn.h>     // dlopen, dlsym, dlclose
+#include <unistd.h>    // sleep
+#include <cstdint>
+#include <string>
 
