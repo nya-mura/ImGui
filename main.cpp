@@ -18,6 +18,8 @@
 
 #include "Viscount/xdl/xdl.h"
 
+#include "Viscount/offuscate.h"
+
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...) \
@@ -57,7 +59,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         LOGI("Creating ImGui context");
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = nullptr;
+        io.IniFilename = NULL;
         bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
         LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
@@ -136,16 +138,18 @@ void *sylphy(void*) {
     LOGI("Done");
 
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
-    int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
+    // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
     LOGI("DobbyHook result: %d", result);
-    LOGI("DobbyHook result1: %d", result1);
+    // LOGI("DobbyHook result1: %d", result1);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
-    LOGI("Input Fucntion: %p", (void*)origInput);
+    // LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
 
-
-    
-    return nullptr;
+    uintptr_t Width = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_width"));
+    LOGI("Width Addr: 0x%lx", Width);
+    uintptr_t Height = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_height"));
+    LOGI("Height Adrr: 0x%lx", Height);
+    return NULL;
 }
 __attribute__((constructor))
 void lib_main() {
