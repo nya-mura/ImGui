@@ -128,7 +128,7 @@ void *sylphy(void*) {
         return NULL;
     }
     LOGI("handle_input address: %p", handle_input);
-    void* input = xdl_sym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE", NULL);
+    void* input = xdl_sym(handle_input, "_ZN7android13InputConsumer7consumeEPNS_26InputEventFactoryInterfaceEblPjPPNS_10InputEventE", NULL);
     if (!input) {
         return  NULL;
     }
