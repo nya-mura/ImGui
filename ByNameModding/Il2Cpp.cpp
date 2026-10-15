@@ -1,5 +1,6 @@
 #include "Il2Cpp.h"
-
+#include "obfuscate.h"
+#include <android/log.h>
 #define targetLib OBFUSCATE("libil2cpp.so")
 #define g_LogTag OBFUSCATE("IL2CPP-LOGGER")
 
