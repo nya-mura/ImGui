@@ -14,7 +14,7 @@
 #include "ByNameModding/Includes.h"
 #include "ByNameModding/fake_dlfcn.h"
 #include "Viscount/xdl/xdl.h"
-#include "ByNameModding/Il2Cpp.h"
+#include "ByNameModding/Il2cpp.h"
 #include <android/log.h>
 
 
