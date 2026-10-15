@@ -16,7 +16,7 @@
 #include "ByNameModding/Il2Cpp.h"
 #include <android/log.h>
 
-
+#include "Viscount/xdl.h"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
@@ -112,23 +112,23 @@ void *sylphy(void*) {
     Il2CppAttach(libName);
     LOGI("After Il2CppAttach");
     LOGI("Attach");
-    void *egl = fake_dlopen("libEGL.so", RTLD_NOW);
+    void *egl =dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return NULL;
     }
     LOGI("egl address: %p", egl);
 
-    void *swap = fake_dlsym(egl, "eglSwapBuffers");
+    void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
         return NULL;
     }
     LOGI("eglSwapBuffers address: %p", swap);
-    void* handle_input = fake_dlopen("libinput.so", RTLD_NOW);
+    void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
     if (!handle_input) {
         return NULL;
     }
     LOGI("handle_input address: %p", handle_input);
-    void* input = fake_dlsym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
+    void* input = xdl_sym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE", NULL);
     if (!input) {
         return  NULL;
     }
