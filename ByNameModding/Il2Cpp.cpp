@@ -33,7 +33,7 @@ typedef char UTF8;
     void *(*il2cpp_object_new)(void *klass);
 
 
-void *IL2Cpp::Il2CppGetImageByName(const char *image) {
+void *Il2CppGetImageByName(const char *image) {
 	size_t size;
 	
 	void **assemblies = il2cpp_domain_get_assemblies(il2cpp_domain_get(), &size);
@@ -49,7 +49,7 @@ void *IL2Cpp::Il2CppGetImageByName(const char *image) {
 	return nullptr;
 }
 
-void *IL2Cpp::Il2CppGetClassType(const char *image, const char *namespaze, const char *clazz) {
+void *Il2CppGetClassType(const char *image, const char *namespaze, const char *clazz) {
 	std::map<std::string, void *> cache;
 	
 	std::string s = image;
@@ -58,7 +58,7 @@ void *IL2Cpp::Il2CppGetClassType(const char *image, const char *namespaze, const
 	if (cache.count(s) > 0)
 		return cache[s];
 		
-	void *img = IL2Cpp::Il2CppGetImageByName(image);
+	void *img = Il2CppGetImageByName(image);
 	if (!img) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find image %s!"), image);
 		return nullptr;
@@ -74,13 +74,13 @@ void *IL2Cpp::Il2CppGetClassType(const char *image, const char *namespaze, const
 	return klass;
 }
 
-void IL2Cpp::Il2CppGetStaticFieldValue(const char *image, const char *namespaze, const char *clazz, const char *name, void *output) {
-	void *img = IL2Cpp::Il2CppGetImageByName(image);
+void Il2CppGetStaticFieldValue(const char *image, const char *namespaze, const char *clazz, const char *name, void *output) {
+	void *img = Il2CppGetImageByName(image);
 	if (!img) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find image %s!"), image);
 		return;
 	}
-	void *klass = IL2Cpp::Il2CppGetClassType(image, namespaze, clazz);
+	void *klass = Il2CppGetClassType(image, namespaze, clazz);
 	if (!klass) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find field %s!"), clazz, name);
 		return;
@@ -93,13 +93,13 @@ void IL2Cpp::Il2CppGetStaticFieldValue(const char *image, const char *namespaze,
 	il2cpp_field_static_get_value(field, output);
 }
 
-void IL2Cpp::Il2CppSetStaticFieldValue(const char *image, const char *namespaze, const char *clazz, const char *name, void* value) {
-	void *img = IL2Cpp::Il2CppGetImageByName(image);
+void Il2CppSetStaticFieldValue(const char *image, const char *namespaze, const char *clazz, const char *name, void* value) {
+	void *img = Il2CppGetImageByName(image);
 	if (!img) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find image %s!"), image);
 		return;
 	}
-	void *klass = IL2Cpp::Il2CppGetClassType(image, namespaze, clazz);
+	void *klass = Il2CppGetClassType(image, namespaze, clazz);
 	if (!klass) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find field %s!"), clazz, name);
 		return;
@@ -112,13 +112,13 @@ void IL2Cpp::Il2CppSetStaticFieldValue(const char *image, const char *namespaze,
 	il2cpp_field_static_set_value(field, value);
 }
 
-void *IL2Cpp::Il2CppGetMethodOffset(const char *image, const char *namespaze, const char *clazz, const char *name, int argsCount) {
-	void *img = IL2Cpp::Il2CppGetImageByName(image);
+void *Il2CppGetMethodOffset(const char *image, const char *namespaze, const char *clazz, const char *name, int argsCount) {
+	void *img = Il2CppGetImageByName(image);
 	if (!img) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find image %s!"), image);
 		return nullptr;
 	}
-	void *klass = IL2Cpp::Il2CppGetClassType(image, namespaze, clazz);
+	void *klass = Il2CppGetClassType(image, namespaze, clazz);
 	if (!klass) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find method %s!"), clazz, name);
 		return nullptr;
@@ -132,13 +132,13 @@ void *IL2Cpp::Il2CppGetMethodOffset(const char *image, const char *namespaze, co
 	return *method;
 }
 
-size_t IL2Cpp::Il2CppGetFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name) {
-	void *img = IL2Cpp::Il2CppGetImageByName(image);
+size_t Il2CppGetFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name) {
+	void *img = Il2CppGetImageByName(image);
 	if (!img) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find image %s!"), image);
 		return -1;
 	}
-	void *klass = IL2Cpp::Il2CppGetClassType(image, namespaze, clazz);
+	void *klass = Il2CppGetClassType(image, namespaze, clazz);
 	if (!klass) {
 		__android_log_print(ANDROID_LOG_ERROR, g_LogTag, OBFUSCATE("Can't find field %s!"), clazz, name);
 		return -1;
