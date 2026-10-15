@@ -114,7 +114,7 @@ void *sylphy(void*) {
     }
     LOGI("Found lib 0x%lx", base);
     LOGI("Before Il2CppAttach");
-    IL2Cpp::Il2CppAttach();
+    Il2CppAttach(libName);
     LOGI("After Il2CppAttach");
     LOGI("Attach");
     void *egl =dlopen("libEGL.so", RTLD_NOW);
@@ -148,9 +148,9 @@ void *sylphy(void*) {
     // LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
 
-    uintptr_t Width = (uintptr_t)IL2Cpp::Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_width"), 0);
+    uintptr_t Width = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_width"), 0);
     LOGI("Width Addr: 0x%lx", Width);
-    uintptr_t Height = (uintptr_t)IL2Cpp::Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_height"), 0);
+    uintptr_t Height = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_height"), 0);
     LOGI("Height Adrr: 0x%lx", Height);
     return NULL;
 }

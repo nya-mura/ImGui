@@ -2,8 +2,7 @@
 
 #include "Includes.h"
 
-namespace IL2Cpp {
-	void Il2CppAttach();
+    void Il2CppAttach(const char *name="libil2cpp.so");
 	
 	void *Il2CppGetImageByName(const char *image);
 	void *Il2CppGetClassType(const char *image, const char *namespaze, const char *clazz);
@@ -14,7 +13,7 @@ namespace IL2Cpp {
 	void *Il2CppGetMethodOffset(const char *image, const char *namespaze, const char *clazz, const char *name, int argsCount);
 	size_t Il2CppGetFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name);
 
-}
+
 
 template<typename T> struct Il2CppArray {
     void *klass;

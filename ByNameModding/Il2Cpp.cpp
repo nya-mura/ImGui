@@ -3,6 +3,7 @@
 #include "obfuscate.h"
 #include <android/log.h>
 #include <dlfcn.h>
+#include "fake_dlfcn.h"
 #define targetLib OBFUSCATE("libil2cpp.so")
 #define g_LogTag OBFUSCATE("IL2CPP-LOGGER")
 
@@ -10,20 +11,27 @@ typedef unsigned short UTF16;
 typedef wchar_t UTF32;
 typedef char UTF8;
 
-namespace {
-	Il2CppString *(*il2cpp_string_new)(const char *str);
-    Il2CppString *(*il2cpp_string_new_utf16)(const wchar_t *str, int32_t length);
-	void **(*il2cpp_domain_get_assemblies)(const void *domain, size_t *size);
-	void *(*il2cpp_domain_get)();
-	const void *(*il2cpp_assembly_get_image)(const void *assembly);
-	const char *(*il2cpp_image_get_name)(void *image);
+
+    const void *(*il2cpp_assembly_get_image)(const void *assembly);
+    void *(*il2cpp_domain_get)();
+    void **(*il2cpp_domain_get_assemblies)(const void *domain, size_t *size);
+    const char *(*il2cpp_image_get_name)(void *image);
     void *(*il2cpp_class_from_name)(const void *image, const char *namespaze, const char *name);
     void *(*il2cpp_class_get_field_from_name)(void *klass, const char *name);
-	void (*il2cpp_field_static_get_value)(void *field, void *value);
+    void *(*il2cpp_class_get_method_from_name)(void *klass, const char *name, int argsCount);
+    size_t (*il2cpp_field_get_offset)(void *field);
+    void (*il2cpp_field_static_get_value)(void *field, void *value);
     void (*il2cpp_field_static_set_value)(void *field, void *value);
-	void *(*il2cpp_class_get_method_from_name)(void *klass, const char *name, int argsCount);
-	size_t (*il2cpp_field_get_offset)(void *field);
-}
+    void *(*il2cpp_array_new)(void *elementTypeInfo, size_t length);
+    uint16_t *(*il2cpp_string_chars)(void *str);
+    Il2CppString *(*il2cpp_string_new)(const char *str);
+    Il2CppString *(*il2cpp_string_new_utf16)(const wchar_t *str, int32_t length);
+    char *(*il2cpp_type_get_name)(void *type);
+    void* (*il2cpp_method_get_param)(void *method, uint32_t index);
+    void* (*il2cpp_class_get_methods)(void *klass, void* *iter);
+    const char* (*il2cpp_method_get_name)(void *method);
+    void *(*il2cpp_object_new)(void *klass);
+
 
 void *IL2Cpp::Il2CppGetImageByName(const char *image) {
 	size_t size;
@@ -244,24 +252,53 @@ Il2CppString *Il2CppString::Create(const wchar_t *s, int len) {
     return il2cpp_string_new_utf16(s, len);
 }
 
-void IL2Cpp::Il2CppAttach() {
-	void *IL2Cpp_Handle = nullptr;
-	
-	while (!IL2Cpp_Handle) {
-		IL2Cpp_Handle = dlopen(targetLib, RTLD_NOW);
-		sleep(1);
-	}
-	il2cpp_domain_get_assemblies = (void **(*)(const void *, size_t *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_domain_get_assemblies"));
-	il2cpp_string_new = (Il2CppString *(*)(const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_string_new"));
-    il2cpp_string_new_utf16 = (Il2CppString *(*)(const wchar_t *, int32_t)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_string_new_utf16"));
-	il2cpp_domain_get = (void *(*)()) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_domain_get"));
-    il2cpp_assembly_get_image = (const void *(*)(const void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_assembly_get_image"));
-	il2cpp_image_get_name = (const char *(*)(void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_image_get_name"));
-    il2cpp_class_from_name = (void* (*)(const void*, const char*, const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_from_name"));
-    il2cpp_class_get_field_from_name = (void* (*)(void*, const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_get_field_from_name"));
-    il2cpp_field_static_get_value = (void (*)(void*, void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_static_get_value"));
-	il2cpp_field_static_set_value = (void (*)(void*, void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_static_set_value"));
-    il2cpp_class_get_method_from_name = (void* (*)(void *, const char*, int)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_get_method_from_name"));
-    il2cpp_field_get_offset = (size_t (*)(void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_get_offset"));
-	dlclose(IL2Cpp_Handle);
+void Il2CppAttach(const char *name) {
+    void *handle = dlopen_ex(name, 0);
+    while (!handle) {
+        handle = dlopen_ex(name, 0);
+        sleep(1);
+    }
+
+    il2cpp_assembly_get_image = (const void *(*)(const void *)) dlsym_ex(handle, "il2cpp_assembly_get_image");
+    il2cpp_domain_get = (void *(*)()) dlsym_ex(handle, "il2cpp_domain_get");
+    il2cpp_domain_get_assemblies = (void **(*)(const void* , size_t*)) dlsym_ex(handle, "il2cpp_domain_get_assemblies");
+    il2cpp_image_get_name = (const char *(*)(void *)) dlsym_ex(handle, "il2cpp_image_get_name");
+    il2cpp_class_from_name = (void* (*)(const void*, const char*, const char *)) dlsym_ex(handle, "il2cpp_class_from_name");
+    il2cpp_class_get_field_from_name = (void* (*)(void*, const char *)) dlsym_ex(handle, "il2cpp_class_get_field_from_name");
+    il2cpp_class_get_method_from_name = (void* (*)(void *, const char*, int)) dlsym_ex(handle, "il2cpp_class_get_method_from_name");
+    il2cpp_field_get_offset = (size_t (*)(void *)) dlsym_ex(handle, "il2cpp_field_get_offset");
+    il2cpp_field_static_get_value = (void (*)(void*, void *)) dlsym_ex(handle, "il2cpp_field_static_get_value");
+    il2cpp_field_static_set_value = (void (*)(void*, void *)) dlsym_ex(handle, "il2cpp_field_static_set_value");
+    il2cpp_array_new = (void *(*)(void*, size_t)) dlsym_ex(handle, "il2cpp_array_new");
+    il2cpp_string_chars = (uint16_t *(*)(void*)) dlsym_ex(handle, "il2cpp_string_chars");
+    il2cpp_string_new = (Il2CppString *(*)(const char *)) dlsym_ex(handle, "il2cpp_string_new");
+    il2cpp_string_new_utf16 = (Il2CppString *(*)(const wchar_t *, int32_t)) dlsym_ex(handle, "il2cpp_string_new");
+    il2cpp_type_get_name = (char *(*)(void *)) dlsym_ex(handle, "il2cpp_type_get_name");
+    il2cpp_method_get_param = (void *(*)(void *, uint32_t)) dlsym_ex(handle, "il2cpp_method_get_param");
+    il2cpp_class_get_methods = (void *(*)(void *, void **)) dlsym_ex(handle, "il2cpp_class_get_methods");
+    il2cpp_method_get_name = (const char *(*)(void *)) dlsym_ex(handle, "il2cpp_method_get_name");
+    il2cpp_object_new = (void *(*)(void *)) dlsym_ex(handle, "il2cpp_object_new");
+
+    dlclose_ex(handle);
 }
+// void IL2Cpp::Il2CppAttach() {
+// 	void *IL2Cpp_Handle = nullptr;
+//
+// 	while (!IL2Cpp_Handle) {
+// 		IL2Cpp_Handle = dlopen(targetLib, RTLD_NOW);
+// 		sleep(1);
+// 	}
+// 	il2cpp_domain_get_assemblies = (void **(*)(const void *, size_t *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_domain_get_assemblies"));
+// 	il2cpp_string_new = (Il2CppString *(*)(const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_string_new"));
+//     il2cpp_string_new_utf16 = (Il2CppString *(*)(const wchar_t *, int32_t)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_string_new_utf16"));
+// 	il2cpp_domain_get = (void *(*)()) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_domain_get"));
+//     il2cpp_assembly_get_image = (const void *(*)(const void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_assembly_get_image"));
+// 	il2cpp_image_get_name = (const char *(*)(void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_image_get_name"));
+//     il2cpp_class_from_name = (void* (*)(const void*, const char*, const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_from_name"));
+//     il2cpp_class_get_field_from_name = (void* (*)(void*, const char *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_get_field_from_name"));
+//     il2cpp_field_static_get_value = (void (*)(void*, void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_static_get_value"));
+// 	il2cpp_field_static_set_value = (void (*)(void*, void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_static_set_value"));
+//     il2cpp_class_get_method_from_name = (void* (*)(void *, const char*, int)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_class_get_method_from_name"));
+//     il2cpp_field_get_offset = (size_t (*)(void *)) dlsym(IL2Cpp_Handle, OBFUSCATE("il2cpp_field_get_offset"));
+// 	dlclose(IL2Cpp_Handle);
+// }
