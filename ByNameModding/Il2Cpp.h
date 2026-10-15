@@ -1,8 +1,8 @@
+#pragma once
+
 //
 // Created by aimar on 12/28/2019.
-// Modified by baydroid on 13/13/1945
 //
-
 #pragma once
 
 #include <stdio.h>
@@ -12,8 +12,6 @@
 #include <locale>
 #include <dlfcn.h>
 
-using namespace std;
-
 #ifndef IL2CPP_H
 #define IL2CPP_H
 
@@ -22,31 +20,36 @@ typedef void(*Il2CppMethodPointer)();
 
 struct MethodInfo;
 
-struct VirtualInvokeData {
+struct VirtualInvokeData
+{
     Il2CppMethodPointer methodPtr;
     const MethodInfo* method;
 };
 
-struct Il2CppType {
+struct Il2CppType
+{
     void* data;
     unsigned int bits;
 };
 
 struct Il2CppClass;
 
-struct Il2CppObject {
+struct Il2CppObject
+{
     Il2CppClass *klass;
     void *monitor;
 };
 
-union Il2CppRGCTXData {
+union Il2CppRGCTXData
+{
     void* rgctxDataDummy;
     const MethodInfo* method;
     const Il2CppType* type;
     Il2CppClass* klass;
 };
 
-struct Il2CppClass_1 {
+struct Il2CppClass_1
+{
     void* image;
     void* gc_desc;
     const char* name;
@@ -69,7 +72,8 @@ struct Il2CppClass_1 {
     void* interfaceOffsets;
 };
 
-struct Il2CppClass_2 {
+struct Il2CppClass_2
+{
     Il2CppClass** typeHierarchy;
     uint32_t cctor_started;
     uint32_t cctor_finished;
@@ -102,7 +106,8 @@ struct Il2CppClass_2 {
     uint8_t bitflags2;
 };
 
-struct Il2CppClass {
+struct Il2CppClass
+{
     Il2CppClass_1 _1;
     void* static_fields;
     Il2CppRGCTXData* rgctx_data;
@@ -112,23 +117,27 @@ struct Il2CppClass {
 
 typedef int32_t il2cpp_array_size_t;
 typedef int32_t il2cpp_array_lower_bound_t;
-struct Il2CppArrayBounds {
+struct Il2CppArrayBounds
+{
     il2cpp_array_size_t length;
     il2cpp_array_lower_bound_t lower_bound;
 };
 
-struct MethodInfo {
+struct MethodInfo
+{
     Il2CppMethodPointer methodPointer;
     void* invoker_method;
     const char* name;
     Il2CppClass *declaring_type;
     const Il2CppType *return_type;
     const void* parameters;
-    union {
+    union
+    {
         const Il2CppRGCTXData* rgctx_data;
         const void* methodDefinition;
     };
-    union {
+    union
+    {
         const void* genericMethod;
         const void* genericContainer;
     };
@@ -141,7 +150,8 @@ struct MethodInfo {
     uint8_t bitflags;
 };
 
-struct FieldInfo {
+struct FieldInfo
+{
 public:
     const char* name;
     const Il2CppType* type;
@@ -175,7 +185,7 @@ template<typename T> struct Il2CppArray {
 };
 
 template<typename T>
-using MonoArray = Il2CppArray<T>;
+using Array = Il2CppArray<T>;
 
 struct Il2CppString {
     Il2CppClass *klass;
@@ -187,15 +197,15 @@ struct Il2CppString {
 
     const wchar_t *WCString();
 
-    static Il2CppString *CreateMonoString(const char *s);
-    static Il2CppString *CreateMonoString(const wchar_t *s, int len);
+    static Il2CppString *Create(const char *s);
+    static Il2CppString *Create(const wchar_t *s, int len);
 
     int getLength() {
         return length;
     }
 };
 
-typedef Il2CppString MonoString;
+typedef Il2CppString String;
 
 template<typename T> struct Il2CppList {
     Il2CppClass *klass;
@@ -226,7 +236,7 @@ template<typename T> struct Il2CppList {
 };
 
 template<typename T>
-using MonoList = Il2CppList<T>;
+using List = Il2CppList<T>;
 
 template<typename K, typename V> struct Il2CppDictionary {
     Il2CppClass *klass;
@@ -263,7 +273,7 @@ template<typename K, typename V> struct Il2CppDictionary {
 template<typename K, typename V>
 using Dictionary = Il2CppDictionary<K, V>;
 
-void Il2CppAttach(const char *name = "liblogic.so");
+void Il2CppAttach(const char *name="libil2cpp.so");
 void *Il2CppGetImageByName(const char *image);
 void *Il2CppGetClassType(const char *image, const char *namespaze, const char *clazz);
 void *Il2CppCreateClassInstance(const char *image, const char *namespaze, const char *clazz);
@@ -276,8 +286,7 @@ void *Il2CppGetMethodOffset(const char *image, const char *namespaze, const char
 void *Il2CppGetMethodOffset(const char *image, const char *namespaze, const char *clazz, const char *name, char** args, int argsCount);
 
 size_t Il2CppGetFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name);
-
-unsigned long Il2CppGetStaticFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name);
+size_t Il2CppGetStaticFieldOffset(const char *image, const char *namespaze, const char *clazz, const char *name);
 
 bool Il2CppIsAssembliesLoaded();
 #endif
