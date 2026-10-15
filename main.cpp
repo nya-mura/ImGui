@@ -1,4 +1,4 @@
-
+#include <jni.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <bits/pthread_types.h>
@@ -20,7 +20,15 @@
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
+#define HOOKAF(ret, func, ...) \
+    ret (*orig##func)(__VA_ARGS__); \
+    ret my##func(__VA_ARGS__)
 
+HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac) {
+    origInput(thiz, ex_ab, ex_ac);
+    ImGui_ImplAndroid_HandleInputEvent((AInputEvent*)thiz);
+    return;
+}
 
 #define libName "libil2cpp.so"
 
@@ -29,92 +37,7 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
-uintptr_t touchCountPtr = (uintptr_t)Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
-uintptr_t getTouchPtr = (uintptr_t)Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
 
-static bool IsSafeMethodPtr(uintptr_t ptr) {
-    return ptr != 0 && ptr > 0x1000;
-}
-
-bool clearMousePos = true, setup = false;
-struct UnityEngine_Vector2_Fields {
-    float x;
-    float y;
-};
-
-struct UnityEngine_Vector2_o {
-    UnityEngine_Vector2_Fields fields;
-};
-
-enum TouchPhase {
-    Began = 0,
-    Moved = 1,
-    Stationary = 2,
-    Ended = 3,
-    Canceled = 4
-};
-
-
-
-
-struct UnityEngine_Touch_Fields {
-    int32_t m_FingerId;
-    struct UnityEngine_Vector2_o m_Position;
-    struct UnityEngine_Vector2_o m_RawPosition;
-    struct UnityEngine_Vector2_o m_PositionDelta;
-    float m_TimeDelta;
-    int32_t m_TapCount;
-    int32_t m_Phase;
-    int32_t m_Type;
-    float m_Pressure;
-    float m_maximumPossiblePressure;
-    float m_Radius;
-    float m_fRadiusVariance;
-    float m_AltitudeAngle;
-    float m_AzimuthAngle;
-};
-
-void touch(bool* mouse) {
-    ImGuiIO& io = ImGui::GetIO();
-
-    if (!IsSafeMethodPtr(touchCountPtr)) {
-        io.MouseDown[0] = false;
-        return;
-    }
-
-    int (*TouchCount)(void*) = (int (*)(void*))touchCountPtr;
-    int touchCount = TouchCount(nullptr);
-    if (touchCount > 0 && touchCount < 16) {
-
-        if (!IsSafeMethodPtr(getTouchPtr)) {
-            io.MouseDown[0] = false;
-            return;
-        }
-
-        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int)) (getTouchPtr)) (0);
-        float reverseY = io.DisplaySize.y - touch.m_Position.fields.y;
-
-        switch (touch.m_Phase) {
-            case TouchPhase::Began:
-            case TouchPhase::Stationary:
-                io.MousePos = ImVec2(touch.m_Position.fields.x, reverseY);
-                io.MouseDown[0] = true;
-                break;
-            case TouchPhase::Ended:
-            case TouchPhase::Canceled:
-                io.MouseDown[0] = false;
-                *mouse = true;
-                break;
-            case TouchPhase::Moved:
-                io.MousePos = ImVec2(touch.m_Position.fields.x, reverseY);
-                break;
-            default:
-                break;
-        }
-    } else {
-        io.MouseDown[0] = false;
-    }
-}
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
@@ -151,7 +74,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    touch(&should_clear_mouse_pos);
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -191,19 +114,33 @@ void *sylphy(void*) {
     LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
-        return nullptr;
+        return NULL;
     }
     LOGI("egl address: %p", egl);
 
     void *swap = dlsym(egl, "eglSwapBuffers");
     if (!swap) {
-        return nullptr;
+        return NULL;
     }
-    LOGI("Done");
     LOGI("eglSwapBuffers address: %p", swap);
+    void* handle_input = dlopen("libinput.so", RTLD_NOW);
+    if (!handle_input) {
+        return NULL;
+    }
+    LOGI("handle_input address: %p", handle_input);
+    void* input = dlsym(handle_input, "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
+    if (!input) {
+        return  NULL;
+    }
+    LOGI("input address: %p", input);
+    LOGI("Done");
+
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
+    int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
     LOGI("DobbyHook result: %d", result);
+    LOGI("DobbyHook result1: %d", result1);
     LOGI("Original function: %p", (void*)orig_eglSwapBuffers);
+    LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
 
     
@@ -216,3 +153,10 @@ void lib_main() {
     pthread_create(&trixie, NULL, sylphy, NULL);
 
 }
+
+extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
+    JNIEnv *env;
+    vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+    return JNI_VERSION_1_6;
+}
+
