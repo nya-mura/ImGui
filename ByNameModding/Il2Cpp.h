@@ -264,6 +264,8 @@ template<typename K, typename V>
 using Dictionary = Il2CppDictionary<K, V>;
 
 void Il2CppAttach(const char *name = "liblogic.so");
+void Il2CppAttachThread();
+void Il2CppDetachThread();
 void *Il2CppGetImageByName(const char *image);
 void *Il2CppGetClassType(const char *image, const char *namespaze, const char *clazz);
 void *Il2CppCreateClassInstance(const char *image, const char *namespaze, const char *clazz);
