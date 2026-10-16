@@ -28,6 +28,17 @@
 #include <unistd.h>
 #include "Viscount/memory.h"
 
+
+#define HOOK(ret, func, ...) \
+    ret (*orig##func)(__VA_ARGS__); \
+    ret my##func(__VA_ARGS__)
+
+HOOK(void, Input, void *thiz, void *ex_ab, void *ex_ac){ 
+    origInput(thiz, ex_ab, ex_ac);
+    ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz); 
+    return;
+}
+
 static bool IsSafeMethodPtr(void* ptr) {
     return ptr != nullptr && (uintptr_t)ptr > 0x1000;
 }
@@ -147,7 +158,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    touch(&should_clear_mouse_pos);
+    // touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -210,4 +221,16 @@ void lib_main() {
     pthread_t trixie;
     pthread_create(&trixie, NULL, sylphy, NULL);
     
+}
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
+{
+    JNIEnv *env;
+    vm->GetEnv((void **) &env, JNI_VERSION_1_6);
+
+    void *sym_input = DobbySymbolResolver(("/system/lib/libinput.so"), ("_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE")); 
+    if (NULL != sym_input){
+        DobbyHook((void *)sym_input, (void *) myInput, (void **)&origInput);
+    }
+    return JNI_VERSION_1_6;
 }
