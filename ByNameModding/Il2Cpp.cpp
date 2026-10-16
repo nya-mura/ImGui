@@ -30,9 +30,6 @@ namespace {
     void* (*il2cpp_class_get_methods)(void *klass, void* *iter);
     const char* (*il2cpp_method_get_name)(void *method);
     void *(*il2cpp_object_new)(void *klass);
-    void *(*il2cpp_thread_attach)(void *domain);
-    void *(*il2cpp_thread_current)();
-    void (*il2cpp_thread_detach)(void *thread);
 }
 // =========================================================================== //
 void Il2CppAttach(const char *name) {
@@ -55,36 +52,14 @@ void Il2CppAttach(const char *name) {
     il2cpp_array_new = (void *(*)(void*, size_t)) dlsym_ex(handle, "il2cpp_array_new");
     il2cpp_string_chars = (uint16_t *(*)(void*)) dlsym_ex(handle, "il2cpp_string_chars");
     il2cpp_string_new = (Il2CppString *(*)(const char *)) dlsym_ex(handle, "il2cpp_string_new");
-    il2cpp_string_new_utf16 = (Il2CppString *(*)(const wchar_t *, int32_t)) dlsym_ex(handle, "il2cpp_string_new_utf16");
+    il2cpp_string_new_utf16 = (Il2CppString *(*)(const wchar_t *, int32_t)) dlsym_ex(handle, "il2cpp_string_new");
     il2cpp_type_get_name = (char *(*)(void *)) dlsym_ex(handle, "il2cpp_type_get_name");
     il2cpp_method_get_param = (void *(*)(void *, uint32_t)) dlsym_ex(handle, "il2cpp_method_get_param");
     il2cpp_class_get_methods = (void *(*)(void *, void **)) dlsym_ex(handle, "il2cpp_class_get_methods");
     il2cpp_method_get_name = (const char *(*)(void *)) dlsym_ex(handle, "il2cpp_method_get_name");
     il2cpp_object_new = (void *(*)(void *)) dlsym_ex(handle, "il2cpp_object_new");
-    il2cpp_thread_attach = (void *(*)(void *)) dlsym_ex(handle, "il2cpp_thread_attach");
-    il2cpp_thread_current = (void *(*)()) dlsym_ex(handle, "il2cpp_thread_current");
-    il2cpp_thread_detach = (void (*)(void *)) dlsym_ex(handle, "il2cpp_thread_detach");
 
     dlclose_ex(handle);
-}
-// =========================================================================== //
-void Il2CppAttachThread() {
-    if (!il2cpp_thread_attach || !il2cpp_domain_get) {
-        IL2CPP_LOGE("Il2CppAttachThread: il2cpp API not loaded, call Il2CppAttach() first!");
-        return;
-    }
-
-    il2cpp_thread_attach(il2cpp_domain_get());
-    IL2CPP_LOGI("Thread attached to il2cpp domain");
-}
-// =========================================================================== //
-void Il2CppDetachThread() {
-    if (!il2cpp_thread_detach || !il2cpp_thread_current)
-        return;
-
-    void *thread = il2cpp_thread_current();
-    if (thread)
-        il2cpp_thread_detach(thread);
 }
 // =========================================================================== //
 typedef unsigned short UTF16;

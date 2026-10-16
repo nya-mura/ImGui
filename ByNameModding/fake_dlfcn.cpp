@@ -25,12 +25,10 @@
 #define Elf_Ehdr Elf64_Ehdr
 #define Elf_Shdr Elf64_Shdr
 #define Elf_Sym  Elf64_Sym
-#define Elf_Phdr Elf64_Phdr
 #else
 #define Elf_Ehdr Elf32_Ehdr
 #define Elf_Shdr Elf32_Shdr
 #define Elf_Sym  Elf32_Sym
-#define Elf_Phdr Elf32_Phdr
 #endif
 
 struct ctx {
@@ -56,10 +54,10 @@ static int fake_dlclose(void *handle) {
 /* flags are ignored */
 static void *fake_dlopen_with_path(const char *libpath, int flags) {
     FILE *maps;
-    char buff[256], name[256], chosen[256], fallback[256];
+    char buff[256], name[256];
     struct ctx *ctx = 0;
-    off_t load_addr = 0, map_off = 0, size;
-    int k, fd = -1, found = 0, have_fallback = 0;
+    off_t load_addr, size;
+    int k, fd = -1, found = 0;
     char *shoff;
     Elf_Ehdr *elf = (Elf_Ehdr *) MAP_FAILED;
 
@@ -68,32 +66,17 @@ static void *fake_dlopen_with_path(const char *libpath, int flags) {
     maps = fopen("/proc/self/maps", "r");
     if (!maps) fatal("failed to open maps");
 
-    /* Pick the *executable* mapping. A read-only (r--p) mapping with file
-     * offset 0 may be a plain mmap of the whole file (e.g. created to parse
-     * its ELF); resolving symbols against it yields non-executable addresses
-     * and crashes with SEGV_ACCERR on the first call. Only fall back to r--p
-     * if no executable mapping exists. */
-    chosen[0] = fallback[0] = '\0';
-    while (fgets(buff, sizeof(buff), maps)) {
-        if (!strstr(buff, libpath)) continue;
-        if (strstr(buff, "r-xp")) { strncpy(chosen, buff, sizeof(chosen) - 1); chosen[sizeof(chosen)-1] = '\0'; found = 1; break; }
-        if (!have_fallback && strstr(buff, "r--p")) {
-            strncpy(fallback, buff, sizeof(fallback) - 1); fallback[sizeof(fallback)-1] = '\0';
-            have_fallback = 1;
-        }
-    }
-    if (!found && have_fallback) {
-        strncpy(chosen, fallback, sizeof(chosen) - 1); chosen[sizeof(chosen)-1] = '\0';
-        found = 1;
+    while (!found && fgets(buff, sizeof(buff), maps)) {
+        if (strstr(buff, libpath) && (strstr(buff, "r-xp") || strstr(buff, "r--p"))) found = 1;
     }
     fclose(maps);
 
     if (!found) fatal("%s not found in my userspace", libpath);
 
-    if (sscanf(chosen, "%lx-%*lx %*s %lx %*s %*s %s", &load_addr, &map_off, name) != 3)
+    if (sscanf(buff, "%lx-%*lx %*s %*s %*s %*s %s", &load_addr, name) != 2)
         fatal("failed to read load address for %s", libpath);
 
-    log_info("%s loaded in Android at 0x%08lx (file offset 0x%08lx)", libpath, load_addr, map_off);
+    log_info("%s loaded in Android at 0x%08lx", libpath, load_addr);
 
     libpath = name;
 
@@ -141,36 +124,11 @@ static void *fake_dlopen_with_path(const char *libpath, int flags) {
 
             case SHT_PROGBITS:
                 if (!ctx->dynstr || !ctx->dynsym) break;
-                /* don't derive the load bias from an arbitrary section: a
-                 * non-allocated PROGBITS (e.g. .comment, sh_addr == 0) placed
-                 * after .dynsym/.dynstr produces a huge negative bias that
-                 * shifts every resolved symbol into non-executable memory.
-                 * The bias comes from the program headers below. */
+                /* won't even bother checking against the section name */
+                ctx->bias = (off_t) sh->sh_addr - (off_t) sh->sh_offset;
                 k = elf->e_shnum;  /* exit for */
                 break;
         }
-    }
-
-    /* Derive the load bias from the loadable segment that matches the chosen
-     * mapping's file offset: runtime(sym) = load_addr + st_value - bias, where
-     * load_addr corresponds to p_vaddr of the matched PT_LOAD segment. This is
-     * correct regardless of which segment the mapping belongs to. */
-    if (elf->e_phoff && elf->e_phnum) {
-        Elf_Phdr *ph = (Elf_Phdr *) (((char *) elf) + elf->e_phoff);
-        off_t min_vaddr = 0;
-        int have_load = 0, matched = 0;
-        for (k = 0; k < elf->e_phnum; k++) {
-            if (ph[k].p_type != PT_LOAD) continue;
-            if (!have_load || (off_t) ph[k].p_vaddr < min_vaddr) {
-                min_vaddr = (off_t) ph[k].p_vaddr;
-                have_load = 1;
-            }
-            if ((off_t) ph[k].p_offset == map_off) {
-                ctx->bias = (off_t) ph[k].p_vaddr;
-                matched = 1;
-            }
-        }
-        if (!matched) ctx->bias = have_load ? min_vaddr : 0;
     }
 
     munmap(elf, size);
@@ -180,8 +138,7 @@ static void *fake_dlopen_with_path(const char *libpath, int flags) {
 
 #undef fatal
 
-    log_dbg("%s: ok, dynsym = %p, dynstr = %p, load_addr = %p, bias = %ld",
-            libpath, ctx->dynsym, ctx->dynstr, ctx->load_addr, (long) ctx->bias);
+    log_dbg("%s: ok, dynsym = %p, dynstr = %p", libpath, ctx->dynsym, ctx->dynstr);
 
     return ctx;
 
@@ -267,18 +224,14 @@ static void *fake_dlsym(void *handle, const char *name) {
     Elf_Sym *sym = (Elf_Sym *) ctx->dynsym;
     char *strings = (char *) ctx->dynstr;
 
-    for (k = 0; k < ctx->nsyms; k++, sym++) {
-        if (sym->st_shndx == SHN_UNDEF) continue;   /* undefined import, not a definition */
+    for (k = 0; k < ctx->nsyms; k++, sym++)
         if (strcmp(strings + sym->st_name, name) == 0) {
             /*  NB: sym->st_value is an offset into the section for relocatables,
             but a VMA for shared libs or exe files, so we have to subtract the bias */
             void *ret = (char *) ctx->load_addr + sym->st_value - ctx->bias;
-            log_info("%s found at %p (load_addr=%p bias=%ld st_value=%lx)", name, ret,
-                     ctx->load_addr, (long) ctx->bias, (unsigned long) sym->st_value);
+            log_info("%s found at %p", name, ret);
             return ret;
         }
-    }
-    log_info("%s NOT found", name);
     return 0;
 }
 

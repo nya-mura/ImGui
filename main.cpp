@@ -83,10 +83,7 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     static bool attached = false;
-    if (!attached) {
-        Il2CppAttachThread();
-        attached = true;
-    }
+
 
     ImGuiIO& io = ImGui::GetIO();
     void* touchCountPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
