@@ -230,14 +230,14 @@ void lib_main() {
     
 }
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
-{
-    JNIEnv *env;
-    vm->GetEnv((void **) &env, JNI_VERSION_1_6);
-
-    // void *sym_input = DobbySymbolResolver(("/system/lib/libinput.so"), ("_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE")); 
-    // if (NULL != sym_input){
-    //     DobbyHook((void *)sym_input, (void *) myInput, (void **)&origInput);
-    // }
-    return JNI_VERSION_1_6;
-}
+// JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
+// {
+//     JNIEnv *env;
+//     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
+//
+//     // void *sym_input = DobbySymbolResolver(("/system/lib/libinput.so"), ("_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE")); 
+//     // if (NULL != sym_input){
+//     //     DobbyHook((void *)sym_input, (void *) myInput, (void **)&origInput);
+//     // }
+//     return JNI_VERSION_1_6;
+// }
