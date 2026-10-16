@@ -1,0 +1,69 @@
+# cat /proc/26624/maps | grep libil2cpp.so
+71a844a000-71ac7fd000 r--p 00000000 fe:4b 741229                         /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so
+72a3401000-72a4beb000 r--p 00000000 fe:4b 741229                         /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so
+72a4bee000-72a72ed000 r-xp 017e9000 fe:4b 741229                         /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so
+72a72f0000-72a757b000 r--p 03ee7000 fe:4b 741229                         /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so
+72a757e000-72a77c0000 rw-p 04171000 fe:4b 741229                         /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so
+# logcat -s IMGUI
+--------- beginning of main
+10-16 07:25:50.426 26624 26624 I IMGUI   : Staeted main
+10-16 07:25:50.427 26624 27668 I IMGUI   : On Thread
+10-16 07:25:50.429 26624 27668 I IMGUI   : Found lib 0x71a844a000
+10-16 07:25:50.429 26624 27668 I IMGUI   : Before Il2CppAttach
+10-16 07:25:50.513 26624 27668 I IMGUI   : After Il2CppAttach
+10-16 07:25:50.513 26624 27668 I IMGUI   : Attach
+10-16 07:25:50.514 26624 27668 I IMGUI   : egl address: 0x7ee35178c089c107
+10-16 07:25:50.514 26624 27668 I IMGUI   : Done
+10-16 07:25:50.514 26624 27668 I IMGUI   : eglSwapBuffers address: 0x769d489600
+10-16 07:25:50.514 26624 27668 I IMGUI   : DobbyHook result: 0
+10-16 07:25:50.514 26624 27668 I IMGUI   : Original function: 0x76c12be000
+10-16 07:25:50.514 26624 27668 I IMGUI   : Return Dobby Hook
+10-16 07:25:51.035 26624 26780 I IMGUI   : eglSwapBuffers HOOK REACHED
+10-16 07:25:51.035 26624 26780 I IMGUI   : EGL context: 0xb4000074b4badf10
+10-16 07:25:51.035 26624 26780 I IMGUI   : GL version: OpenGL ES 3.2 v1.r54p1-12eac0.7cb5f152d15bb22491965fa94916637f
+10-16 07:25:51.035 26624 26780 I IMGUI   : Creating ImGui context
+10-16 07:25:51.038 26624 26780 I IMGUI   : OpenGL3 backend initialized: 1
+
+
+
+# logcat -b crash -d
+--------- beginning of crash
+10-16 07:25:51.988 26624 26780 F libc    : Fatal signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 0x71a9ed2034 in tid 26780 (Thread-36), pid 26624 (yzegames.newfps)
+10-16 07:25:52.863 27685 27685 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+10-16 07:25:52.864 27685 27685 F DEBUG   : Build fingerprint: 'Redmi/somalia_in2/somalia:16/BP2A.250605.031.A3/OS3.0.11.0.WBWINXM:user/release-keys'
+10-16 07:25:52.864 27685 27685 F DEBUG   : Revision: '0'
+10-16 07:25:52.864 27685 27685 F DEBUG   : ABI: 'arm64'
+10-16 07:25:52.864 27685 27685 F DEBUG   : Timestamp: 2026-10-16 07:25:52.189103830+0530
+10-16 07:25:52.864 27685 27685 F DEBUG   : Process uptime: 111s
+10-16 07:25:52.864 27685 27685 F DEBUG   : Cmdline: com.blayzegames.newfps
+10-16 07:25:52.864 27685 27685 F DEBUG   : pid: 26624, tid: 26780, name: Thread-36  >>> com.blayzegames.newfps <<<
+10-16 07:25:52.864 27685 27685 F DEBUG   : uid: 10457
+10-16 07:25:52.864 27685 27685 F DEBUG   : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE)
+10-16 07:25:52.864 27685 27685 F DEBUG   : signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 0x00000071a9ed2034
+10-16 07:25:52.864 27685 27685 F DEBUG   : Cause: trying to execute non-executable memory.
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x0  000000711c59780c  x1  b4000075d4d2f8d0  x2  0000000000000000  x3  00000071c6e5bdb0
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x4  000000769d48c8c0  x5  00000000021441ae  x6  0000000000000010  x7  7f7f7f7f7f7f7f7f
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x8  00000071a9ed2034  x9  b4000074b4bcc520  x10 0000000000000000  x11 0000000000000001
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x12 b400007404c3ff70  x13 0000000000000001  x14 b4000074b4bcc510  x15 000001f2db5519ed
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x16 000000711c591488  x17 000000711c533924  x18 00000071c69cc000  x19 00000071a9ed2490
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x20 000000711c59780c  x21 00000071c6e5c740  x22 000000711c59780c  x23 00000071c6e5c740
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x24 000000000033c338  x25 b4000074e4d2e170  x26 000000725126d980  x27 00000071b000018c
+10-16 07:25:52.864 27685 27685 F DEBUG   :     x28 00000071c6e5c740  x29 00000071c6e5bd00
+10-16 07:25:52.864 27685 27685 F DEBUG   :     lr  000000711c53394c  sp  00000071c6e5bd00  pc  00000071a9ed2034  pst 0000000020001000
+10-16 07:25:52.864 27685 27685 F DEBUG   : 14 total frames
+10-16 07:25:52.864 27685 27685 F DEBUG   : backtrace:
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #00 pc 0000000001a8c034  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libil2cpp.so (BuildId: 4a3136fcd29b3c8f0cecc807c0a7f630f73233c7)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #01 pc 0000000000108948  /data/local/tmp/play/libtest.so (Il2CppAttachThread()+36) (BuildId: b20ccd43b22fc6a4c9270b32b5bb3ef657ec074c)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #02 pc 000000000007dd64  /data/local/tmp/play/libtest.so (touch(bool*)+48) (BuildId: b20ccd43b22fc6a4c9270b32b5bb3ef657ec074c)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #03 pc 000000000007dffc  /data/local/tmp/play/libtest.so (hook_eglSawpBuffer(void*, void*)+352) (BuildId: b20ccd43b22fc6a4c9270b32b5bb3ef657ec074c)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #04 pc 000000000118d214  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #05 pc 000000000118d108  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #06 pc 0000000000a4d280  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #07 pc 0000000000a4d21c  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #08 pc 000000000111e580  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #09 pc 00000000011167e0  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #10 pc 0000000001116528  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #11 pc 00000000008f6750  /data/app/~~RTyDV2CRxmYpANXInHMVLw==/com.blayzegames.newfps-1EAEXfnEWku_S-bZK6LgBA==/lib/arm64/libunity.so (BuildId: 26c9375b94e76ed44a541f424f1b57398d5d5810)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #12 pc 000000000008437c  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+236) (BuildId: 6453b240113d001a164971681b296f06)
+10-16 07:25:52.864 27685 27685 F DEBUG   :       #13 pc 00000000000768a0  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+64) (BuildId: 6453b240113d001a164971681b296f06)
+#

@@ -9,7 +9,7 @@ uintptr_t GetBaseAdress(const char* libname) {
         return 0;
     }
     while (fgets(line, sizeof(line), file)) {
-        if (strstr(line, libname)) {
+        if (strstr(line, libname) && strstr(line, "r-xp") != NULL) {
             if (sscanf(line, "%lx-%*lx", &base) == 1) {
                 fclose(file);
                 return base;
