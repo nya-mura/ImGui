@@ -158,7 +158,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    // touch(&should_clear_mouse_pos);
+    touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -228,9 +228,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
-    void *sym_input = DobbySymbolResolver(("/system/lib/libinput.so"), ("_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE")); 
-    if (NULL != sym_input){
-        DobbyHook((void *)sym_input, (void *) myInput, (void **)&origInput);
-    }
+    // void *sym_input = DobbySymbolResolver(("/system/lib/libinput.so"), ("_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE")); 
+    // if (NULL != sym_input){
+    //     DobbyHook((void *)sym_input, (void *) myInput, (void **)&origInput);
+    // }
     return JNI_VERSION_1_6;
 }
