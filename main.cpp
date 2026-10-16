@@ -27,6 +27,9 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+uintptr_t base = 0;
+uintptr_t get_touchCount = 0xa018ca0;
+uintptr_t GetTouch = 0xa16c634;
 
 
 #define HOOK(ret, func, ...) \
@@ -86,7 +89,8 @@ void touch(bool* mouse) {
 
 
     ImGuiIO& io = ImGui::GetIO();
-    void* touchCountPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "get_touchCount", 0);
+    
+    void* touchCountPtr = (void*)(base + get_touchCount);
     if (!IsSafeMethodPtr(touchCountPtr)) {
         io.MouseDown[0] = false;
         return;
@@ -95,7 +99,7 @@ void touch(bool* mouse) {
     int (*TouchCount)(void*) = (int (*)(void*)) (touchCountPtr);
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0 && touchCount < 16) {
-        void* getTouchPtr = Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Input", "GetTouch", 1);
+        void* getTouchPtr = (void*)(base + GetTouch);
         if (!IsSafeMethodPtr(getTouchPtr)) {
             io.MouseDown[0] = false;
             return;
@@ -189,16 +193,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 void *sylphy(void*) {
     LOGI("On Thread");
 
-    uintptr_t base = 0;
+
     while ((base = GetBaseAdress(libName)) == 0) {
         LOGE("Not found");
         sleep(4);
     }
     LOGI("Found lib 0x%lx", base);
-    LOGI("Before Il2CppAttach");
-    Il2CppAttach(libName);
-    LOGI("After Il2CppAttach");
-    LOGI("Attach");
+    // LOGI("Before Il2CppAttach");
+    // Il2CppAttach(libName);
+    // LOGI("After Il2CppAttach");
+    // LOGI("Attach");
     void *egl = dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return nullptr;
