@@ -1,0 +1,33 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/sdcard/ImGui/ByNameModding/Il2Cpp.cpp" "CMakeFiles/test.dir/ByNameModding/Il2Cpp.cpp.o" "gcc" "CMakeFiles/test.dir/ByNameModding/Il2Cpp.cpp.o.d"
+  "/sdcard/ImGui/ByNameModding/fake_dlfcn.cpp" "CMakeFiles/test.dir/ByNameModding/fake_dlfcn.cpp.o" "gcc" "CMakeFiles/test.dir/ByNameModding/fake_dlfcn.cpp.o.d"
+  "/sdcard/ImGui/ImGui/backends/imgui_impl_android.cpp" "CMakeFiles/test.dir/ImGui/backends/imgui_impl_android.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/backends/imgui_impl_android.cpp.o.d"
+  "/sdcard/ImGui/ImGui/backends/imgui_impl_opengl3.cpp" "CMakeFiles/test.dir/ImGui/backends/imgui_impl_opengl3.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/backends/imgui_impl_opengl3.cpp.o.d"
+  "/sdcard/ImGui/ImGui/imgui.cpp" "CMakeFiles/test.dir/ImGui/imgui.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/imgui.cpp.o.d"
+  "/sdcard/ImGui/ImGui/imgui_draw.cpp" "CMakeFiles/test.dir/ImGui/imgui_draw.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/imgui_draw.cpp.o.d"
+  "/sdcard/ImGui/ImGui/imgui_tables.cpp" "CMakeFiles/test.dir/ImGui/imgui_tables.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/imgui_tables.cpp.o.d"
+  "/sdcard/ImGui/ImGui/imgui_widgets.cpp" "CMakeFiles/test.dir/ImGui/imgui_widgets.cpp.o" "gcc" "CMakeFiles/test.dir/ImGui/imgui_widgets.cpp.o.d"
+  "/sdcard/ImGui/main.cpp" "CMakeFiles/test.dir/main.cpp.o" "gcc" "CMakeFiles/test.dir/main.cpp.o.d"
+  "/sdcard/ImGui/struct/MonoString.cpp" "CMakeFiles/test.dir/struct/MonoString.cpp.o" "gcc" "CMakeFiles/test.dir/struct/MonoString.cpp.o.d"
+  "" "libtest.so" "gcc" "CMakeFiles/test.dir/link.d"
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

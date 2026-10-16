@@ -179,7 +179,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 void *sylphy(void*) {
     LOGI("sylphy started");
     LOGI("sylphy waiting for liblogic.so");
-    while ((base = GetBaseAdress("liblogic.so")) == 0) {
+    while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
         LOGI("liblogic.so not found");
         sleep(3);
     }
@@ -187,7 +187,7 @@ void *sylphy(void*) {
 
     LOGI("liblogic.so found: %p", (void*)base);
 
-    Il2CppAttach("liblogic.so");
+    Il2CppAttach("libil2cpp.so");
 
     LOGI("Il2CppAttach done");
     sleep(10);
