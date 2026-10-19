@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+
+
 uintptr_t GetBaseAdress(const char* libname) {
     uintptr_t base = 0;
     char line[1024];
@@ -19,3 +21,5 @@ uintptr_t GetBaseAdress(const char* libname) {
     fclose(file);
     return 0;
 }
+
+

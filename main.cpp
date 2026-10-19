@@ -19,7 +19,12 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "SURF", __VA_ARGS__)
 
 
+uintptr_t base = 0;
 
+uintptr_t getAddress(uintptr_t addr) {
+    uintptr_t offset = base + addr;
+    return offset;
+}
 
 #include <pthread.h>
 #include <jni.h>
@@ -118,7 +123,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
-    touch(&should_clear_mouse_pos);
+    // touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -148,7 +153,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 void *sylphy(void*) {
     LOGI("On Thread");
 
-    uintptr_t base = 0;
+
     while ((base = GetBaseAdress("libil2cpp.so")) == 0) {
         LOGE("Not found");
         sleep(3 );
