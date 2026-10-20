@@ -17,11 +17,6 @@ add_library(test SHARED
     ImGui/backends/imgui_impl_opengl3.cpp
     ByNameModding/fake_dlfcn.cpp
     ByNameModding/Il2Cpp.cpp
-    Viscount/xdl/xdl.c
-    Viscount/xdl/xdl_iterate.c
-    Viscount/xdl/xdl_linker.c
-    Viscount/xdl/xdl_lzma.c
-    Viscount/xdl/xdl_util.c
     # ByNameModding/Tools.cpp
 )
 target_include_directories(test PRIVATE
@@ -30,8 +25,6 @@ target_include_directories(test PRIVATE
     ImGui/backends
     Dobby
     ByNameModding
-    Viscount
-    Viscount/xdl
 
     
 )

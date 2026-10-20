@@ -19,7 +19,7 @@
 #include "ByNameModding/Il2Cpp.h"
 
 
-
+uintptr_t base = 0;
 
 
 
@@ -42,29 +42,29 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac) {
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
-
+#include "hack/class.h"
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
-
-    static bool logged = false;
-
-    if (!logged) {
-        logged = true;
-
-        LOGI("eglSwapBuffers HOOK REACHED");
-        LOGI("EGL context: %p", (void*)eglGetCurrentContext());
-        LOGI("GL version: %s", glGetString(GL_VERSION));
-    }
+    //
+    // static bool logged = false;
+    //
+    // if (!logged) {
+    //     logged = true;
+    //
+    //     LOGI("eglSwapBuffers HOOK REACHED");
+    //     LOGI("EGL context: %p", (void*)eglGetCurrentContext());
+    //     LOGI("GL version: %s", glGetString(GL_VERSION));
+    // }
     static bool g_Initialized = false;
     static bool should_clear_mouse_pos = false;
     if (!g_Initialized) {
-        LOGI("Creating ImGui context");
+        // LOGI("Creating ImGui context");
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = NULL;
         bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
-        LOGI("OpenGL3 backend initialized: %d", ok);
+        // LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
         ImGui::GetStyle().ScaleAllSizes(2.0f);
         g_Initialized = true;
@@ -82,18 +82,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
-    ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Dear ImGui");
-    ImGui::Text("Android!!");
 
-    ImGui::Checkbox("Debug Menu", &debug);
-    ImGui::End();
-    if (debug) {
-        ImGui::Begin("Debug");
-        ImGui::Text("Debug information");
-        ImGui::Text("FPS %.1f", ImGui::GetIO().Framerate);
-        ImGui::End();
-    }
+
+    ImDrawList *imdraw = ImGui::GetBackgroundDrawList();
+
+    ImVec2 position = ImVec2(100.0f, 50.0f); 
+    ImU32 text_color = ImColor(255, 255, 255, 255);
+    char text[64];
+    snprintf(text, sizeof(text), "Count: %d\n", playerlist.count);
+    imdraw->AddText(position,text_color, text);
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -107,7 +104,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
 void *sylphy(void*) {
     LOGI("On Thread");
 
-    uintptr_t base = 0;
     while ((base = GetBaseAdress(libName)) == 0) {
         LOGE("Not found");
         sleep(4);
@@ -128,16 +124,16 @@ void *sylphy(void*) {
         return NULL;
     }
     LOGI("eglSwapBuffers address: %p", swap);
-    void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
-    if (!handle_input) {
-        return NULL;
-    }
-    LOGI("handle_input address: %p", handle_input);
-    void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
-    if (!input) {
-        return  NULL;
-    }
-    LOGI("input address: %p", input);
+    // void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
+    // if (!handle_input) {
+    //     return NULL;
+    // }
+    // LOGI("handle_input address: %p", handle_input);
+    // void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
+    // if (!input) {
+    //     return  NULL;
+    // }
+    // LOGI("input address: %p", input);
     LOGI("Done");
 
     int result = DobbyHook(swap, (void*)hook_eglSawpBuffer, (void**)&orig_eglSwapBuffers);
@@ -148,10 +144,7 @@ void *sylphy(void*) {
     // LOGI("Input Fucntion: %p", (void*)origInput);
     LOGI("Return Dobby Hook");
 
-    uintptr_t Width = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_width"), 0);
-    LOGI("Width Addr: 0x%lx", Width);
-    uintptr_t Height = (uintptr_t)Il2CppGetMethodOffset(OBFUSCATE("UnityEngine.dll"), OBFUSCATE("UnityEngine"), OBFUSCATE("Screen"), OBFUSCATE("get_height"), 0);
-    LOGI("Height Adrr: 0x%lx", Height);
+    test();
     return NULL;
 }
 __attribute__((constructor))
