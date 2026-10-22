@@ -8,14 +8,15 @@ uintptr_t GetBaseAdress(const char* libname) {
     if (!file) {
         return 0;
     }
-    while (fgets(line, sizeof(line), file)) {
-        if (strstr(line, libname) != NULL) {
-            if (sscanf(line, "%lx-%*lx", &base) == 1) {
-                fclose(file);
-                return base;
-            }
+    while (fgets(line, sizeof(line), file) != NULL) {
+
+        if (strstr(line, libname) && strstr(line, "r-xp") != NULL) {
+            break;
+        }
+        if (strstr(line, libname) && strstr(line, "r--p") != NULL) {
+            sscanf(line, "%lx", &base);
         } 
     }
     fclose(file);
-    return 0;
+    return base;
 }
