@@ -1,3 +1,4 @@
+#include <cstdint>
 bool clearMousePos = true, setup = false;
 struct UnityEngine_Vector2_Fields {
     float x;
@@ -38,10 +39,12 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    int (*TouchCount)(void*) = (int (*)(void*))get_touchCount;
+    uintptr_t touch1 = base + get_touchCount;
+    uintptr_t touch2 = base + GetTouch;
+    int (*TouchCount)(void*) = (int (*)(void*))touch1;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0) {
-        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int))GetTouch) (0);
+        UnityEngine_Touch_Fields touch = ((UnityEngine_Touch_Fields (*)(int))touch2) (0);
         float reverseY = io.DisplaySize.y - touch.m_Position.fields.y;
 
         switch (touch.m_Phase) {
