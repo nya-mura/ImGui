@@ -20,3 +20,8 @@ uintptr_t GetBaseAdress(const char* libname) {
     fclose(file);
     return base;
 }
+
+uintptr_t getAbsoluteAdress(uintptr_t offset) {
+    uintptr_t addr = base + offset;
+    return addr;
+}

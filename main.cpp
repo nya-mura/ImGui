@@ -17,8 +17,9 @@
 #include <android/log.h>
 #include "ByNameModding/obfuscate.h"
 #include "ByNameModding/Il2Cpp.h"
+#include "Viscount/extra.h"
 
-#include "hack/offset.h"
+
 uintptr_t base = 0;
 
 
@@ -42,7 +43,9 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac) {
 #include <sys/cdefs.h>
 #include <unistd.h>
 #include "Viscount/memory.h"
+#include "hack/offset.h"
 #include "hack/class.h"
+#include "hack/esp.h"
 #include "touch.h"
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
@@ -85,11 +88,14 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
+    DrawEsp();
+
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui, Cakey");
        
     ImGui::Text("Test");
-    ImGui::Text("EntityList count: %d", playerlist.count);
+    ImGui::Text("Base: 0x%lx", base);
+    ImGui::Text("EntityList: %d", playerlist.count);
     ImGui::End();
 
     ImDrawList *imdraw = ImGui::GetBackgroundDrawList();

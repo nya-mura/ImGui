@@ -21,6 +21,15 @@ void addPlayer(void* player) {
 
     playerlist.count++;
 }
+void removePlayer(void* player) {
+    for (int i = 0; i < playerlist.count; i++) {
+        if (playerlist.addr[i] == (uintptr_t)player) {
+            playerlist.addr[i] = playerlist.addr[playerlist.count - 1];
+            LOGI("Player removed 0x%lx", playerlist.addr[i]);
+            playerlist.count--;
+        }
+    }
+}
 void (*old_lateUpdate)(void* player);
 void lateUpdate(void* player) {
 
@@ -33,13 +42,19 @@ void lateUpdate(void* player) {
     }
     old_lateUpdate(player);
 }
+void (*old_onDestroy)(void* player);
+void onDestroy(void* player) {
+    if (player) {
+        removePlayer(player);
+    }
+
+    old_onDestroy(player);
+}
 
 void test() {
     LOGI("Update Fucntion");
-    uintptr_t test = base + playerUpdate;
-    LOGI("Base 0x%lx", base);
-    LOGI("Update Address : 0x%lx", test);
-    int result1 = DobbyHook((void*)test, (void *)lateUpdate, (void **)&old_lateUpdate);
+
+    int result1 = DobbyHook((void*)playerUpdate, (void *)lateUpdate, (void **)&old_lateUpdate);
     LOGI("RESULT OF DOBBYHOOK Update: %d", result1);
     LOGI("Old Update addr Fucntion %p", (void*)old_lateUpdate);
 }
