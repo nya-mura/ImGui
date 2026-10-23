@@ -23,7 +23,6 @@ void addPlayer(void* player) {
 }
 void (*old_lateUpdate)(void* player);
 void lateUpdate(void* player) {
-    LOGI("Update Hook Reach");
 
     if (player) {
        int checkList = checkPlayer(player);
@@ -37,7 +36,7 @@ void lateUpdate(void* player) {
 
 void test() {
     LOGI("Update Fucntion");
-    uintptr_t test = base + 0x1faa7b0;
+    uintptr_t test = base + playerUpdate;
     LOGI("Base 0x%lx", base);
     LOGI("Update Address : 0x%lx", test);
     int result1 = DobbyHook((void*)test, (void *)lateUpdate, (void **)&old_lateUpdate);

@@ -3268,7 +3268,9 @@ CMakeFiles/test.dir/main.cpp.o: /sdcard/ImGui/main.cpp \
   /sdcard/ImGui/ImGui/imgui.h \
   /sdcard/ImGui/Viscount/memory.h \
   /sdcard/ImGui/Viscount/xdl/xdl.h \
-  /sdcard/ImGui/hack/class.h
+  /sdcard/ImGui/hack/class.h \
+  /sdcard/ImGui/hack/offset.h \
+  /sdcard/ImGui/touch.h
 
 libtest.so: /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/lib/clang/21/lib/linux/aarch64/libatomic.a \
   /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/lib/clang/21/lib/linux/aarch64/libunwind.a \
@@ -3330,6 +3332,8 @@ CMakeFiles/test.dir/ByNameModding/Il2Cpp.cpp.o:
 /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/lib/clang/21/lib/linux/aarch64/libunwind.a:
 
 /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/lib/clang/21/lib/linux/aarch64/libatomic.a:
+
+/sdcard/ImGui/hack/offset.h:
 
 /sdcard/ImGui/Viscount/memory.h:
 
@@ -4718,6 +4722,8 @@ CMakeFiles/test.dir/ByNameModding/fake_dlfcn.cpp.o:
 /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/sysroot/usr/include/c++/v1/__tuple/make_tuple_types.h:
 
 /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/sysroot/usr/include/c++/v1/__math/abs.h:
+
+/sdcard/ImGui/touch.h:
 
 /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/sysroot/usr/include/c++/v1/__algorithm/search_n.h:
 

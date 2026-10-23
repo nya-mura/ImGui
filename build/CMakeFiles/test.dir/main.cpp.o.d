@@ -783,5 +783,6 @@ CMakeFiles/test.dir/main.cpp.o: /sdcard/ImGui/main.cpp \
   /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/sysroot/usr/include/bits/elf_common.h \
   /data/data/com.termux/files/home/android-sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-arm64/sysroot/usr/include/android/log.h \
   /sdcard/ImGui/ByNameModding/obfuscate.h \
-  /sdcard/ImGui/ByNameModding/Il2Cpp.h /sdcard/ImGui/Viscount/memory.h \
-  /sdcard/ImGui/hack/class.h
+  /sdcard/ImGui/ByNameModding/Il2Cpp.h /sdcard/ImGui/hack/offset.h \
+  /sdcard/ImGui/Viscount/memory.h /sdcard/ImGui/hack/class.h \
+  /sdcard/ImGui/touch.h

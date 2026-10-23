@@ -18,7 +18,7 @@
 #include "ByNameModding/obfuscate.h"
 #include "ByNameModding/Il2Cpp.h"
 
-
+#include "hack/offset.h"
 uintptr_t base = 0;
 
 
@@ -43,6 +43,7 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac) {
 #include <unistd.h>
 #include "Viscount/memory.h"
 #include "hack/class.h"
+#include "touch.h"
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
@@ -66,7 +67,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
         // LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
-        ImGui::GetStyle().ScaleAllSizes(2.0f);
+        ImGui::GetStyle().ScaleAllSizes(1.0f);
         g_Initialized = true;
     }
 
@@ -80,17 +81,24 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)w, (float)h);
 
+    // touch(&should_clear_mouse_pos);
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Dear ImGui, Cakey");
+       
+    ImGui::Text("Test");
+    ImGui::Text("EntityList count: %d", playerlist.count);
+    ImGui::End();
 
     ImDrawList *imdraw = ImGui::GetBackgroundDrawList();
 
-    ImVec2 position = ImVec2(100.0f, 50.0f); 
-    ImU32 text_color = ImColor(255, 255, 255, 255);
-    char text[64];
-    snprintf(text, sizeof(text), "Count: %d\n", playerlist.count);
-    imdraw->AddText(position,text_color, text);
+    // ImVec2 position = ImVec2(100.0f, 50.0f); 
+    // ImU32 text_color = ImColor(255, 255, 255, 255);
+    // char text[64];
+    // snprintf(text, sizeof(text), "Count: %d\n", playerlist.count);
+    // imdraw->AddText(position,text_color, text);
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
