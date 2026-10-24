@@ -7,6 +7,8 @@ uintptr_t get_transform = getAbsoluteAdress(0x428dac0);
 uintptr_t get_position = getAbsoluteAdress(0x4299c00);
 uintptr_t get_main = getAbsoluteAdress(0x42629cc);
 uintptr_t WorldToScreenPoint = getAbsoluteAdress(0x4262658);
+uintptr_t get_width = getAbsoluteAdress(0x426ba38);
+uintptr_t get_height = getAbsoluteAdress(0x426ba60);
 void* (*Transform)(void*) = (void*(*)(void*))get_transform;
 Vector3 (*Position)(void*) = (Vector3(*)(void*))get_position;
 void* (*Main)() = (void*(*)())get_main;
@@ -16,5 +18,6 @@ Vector3 GetPosition(void* player) {
     Vector3 pos = Position(Transform(player));
     return pos;
 }
-
+int (*Width)() = (int(*)())get_width;
+int (*Height)() = (int(*)())get_height;
 

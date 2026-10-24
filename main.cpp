@@ -70,7 +70,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
         bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
         // LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
-        ImGui::GetStyle().ScaleAllSizes(1.0f);
+        // ImGui::GetStyle().ScaleAllSizes(1.0f);
         g_Initialized = true;
     }
 
@@ -96,9 +96,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui::Text("Test");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
+    ImGui::Checkbox("Line", &line)
     ImGui::End();
 
-    ImDrawList *imdraw = ImGui::GetBackgroundDrawList();
 
     // ImVec2 position = ImVec2(100.0f, 50.0f); 
     // ImU32 text_color = ImColor(255, 255, 255, 255);
