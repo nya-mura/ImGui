@@ -39,8 +39,8 @@ struct UnityEngine_Touch_Fields {
 
 void touch(bool* mouse) {
     ImGuiIO& io = ImGui::GetIO();
-    uintptr_t get_touchCount = getAbsoluteAdress(RVA_get_touchCount);
-    uintptr_t GetTouch = getAbsoluteAdress(RVA_GetTouch);
+    uintptr_t get_touchCount = base + RVA_get_touchCount;
+    uintptr_t GetTouch = base + RVA_GetTouch;
     int (*TouchCount)(void*) = (int (*)(void*))get_touchCount;
     int touchCount = TouchCount(nullptr);
     if (touchCount > 0) {
