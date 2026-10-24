@@ -88,7 +88,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    DrawEsp();
+    // DrawEsp();
 
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
     ImGui::Begin("Dear ImGui, Cakey");
@@ -96,7 +96,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui::Text("Test");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
-    ImGui::Checkbox("Line", &line)
+    ImGui::Checkbox("Line", &line);
     ImGui::End();
 
 
