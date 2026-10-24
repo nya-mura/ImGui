@@ -53,9 +53,11 @@ void onDestroy(void* player) {
 
 void test() {
     LOGI("Update Fucntion");
-
+    uintptr_t playerUpdate = getAbsoluteAdress(RVA_playerUpdate);
+    uintptr_t playerOnDestroy = getAbsoluteAdress(RVA_playerOnDestroy);
     int result1 = DobbyHook((void*)playerUpdate, (void *)lateUpdate, (void **)&old_lateUpdate);
+    int result2 = DobbyHook((void*)playerOnDestroy, (void*)onDestroy, (void**)&old_onDestroy);
     LOGI("RESULT OF DOBBYHOOK Update: %d", result1);
-    LOGI("Old Update addr Fucntion %p", (void*)old_lateUpdate);
+    LOGI("RETURN OF DOBBYHOOK onDestroy: %d", result2);
 }
 
