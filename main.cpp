@@ -116,7 +116,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 continue;
             }
             Vector3 playerPos = GetPosition(Player);
-            Vector3 WorldPos = WorldToScreenPoint(playerPos);
+            Vector3 WorldPos = World(Main(), playerPos);
             ImGui::Text("Player Pos: %d %d %d", playerPos.x, playerPos.y, playerPos.z);
             ImGui::Text("World Pos: %d %d %d", WorldPos.x, WorldPos.y, WorldPos.z);
             if (WorldPos.z < 1.f)
