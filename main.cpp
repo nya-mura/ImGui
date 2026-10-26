@@ -72,7 +72,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         bool ok = ImGui_ImplOpenGL3_Init("#version 300 es");
         // LOGI("OpenGL3 backend initialized: %d", ok);
         ImGui::StyleColorsDark();
-        // ImGui::GetStyle().ScaleAllSizes(1.0f);
+        ImGui::GetStyle().ScaleAllSizes(0.2f);
         g_Initialized = true;
     }
 
@@ -90,40 +90,70 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    DrawEsp();
+    // DrawEsp();
 
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Dear ImGui, Cakey");
+    ImGui::Begin("Cakey");
 
-    ImGui::Text("Test");
+    ImGui::Text("fwd");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
     ImGui::Checkbox("Esp Line", &line);
+    ImGui::Checkbox("Debug", &debug);
 
-    int width = Width();
-    int height = Height();
-    ImGui::Text("Width: %d", width);
-    ImGui::Text("Height: %d", height);
+
 
     if (debug)
     {
+        uintptr_t get_transform = base + RVA_get_transform;
+        uintptr_t get_position = base + RVA_get_position;
+        uintptr_t get_main = base + RVA_get_main;
+        uintptr_t WorldToScreenPoint = base + RVA_WorldToScreenPoint;
+        uintptr_t get_width = base + RVA_get_width;
+        uintptr_t get_height = base + RVA_get_height;
+        void* (*Transform)(void*) = (void*(*)(void*))get_transform;
+        Vector3 (*Position)(void*) = (Vector3(*)(void*))get_position;
+        void* (*Main)() = (void*(*)())get_main;
+        Vector3 (*World)(void*, Vector3) = (Vector3(*)(void*, Vector3))WorldToScreenPoint;
+        int (*Width)() = (int(*)())get_width;
+        int (*Height)() = (int(*)())get_height;
+
+
+        int width = Width();
+        int height = Height();
+        ImGui::Text("Screen Width: %d", width);
+        ImGui::Text("Screen Height: %d", height);
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
             if (Player == NULL)
             {
-                ImGui::Text("NULL");
+                ImGui::Text("Player NULL");
                 continue;
             }
-            Vector3 playerPos = GetPosition(Player);
-            Vector3 WorldPos = World(Main(), playerPos);
-            ImGui::Text("Player Pos: %d %d %d", playerPos.x, playerPos.y, playerPos.z);
-            ImGui::Text("World Pos: %d %d %d", WorldPos.x, WorldPos.y, WorldPos.z);
-            if (WorldPos.z < 1.f)
-            {
+            ImGui::Text("Player [%d] %p", i, Player);
+            void* playerTransform = Transform(Player);
+            if (playerTransform == NULL) {
+                ImGui::Text("Player Transform NULL");
                 continue;
             }
-            
+            ImGui::Text("Transform [%d] %p", i, playerTransform);
+            void* camera = Main();
+            if (camera == NULL) {
+                ImGui::Text("Camera not found NULL");
+                continue;
+            }
+            ImGui::Text("Main %p", camera);
+
+            Vector3 playerPos = Position(playerTransform);
+            Vector3 WorldPos = World(camera, playerPos);
+            LOGI("Player Pos: %d %d %d", playerPos.x, playerPos.y, playerPos.z);
+            LOGI("World Pos: %d %d %d", WorldPos.x, WorldPos.y, WorldPos.z);
+            // if (WorldPos.z < 1.f)
+            // {
+            //     continue;
+            // }
+
         }
     }
     ImGui::End();
