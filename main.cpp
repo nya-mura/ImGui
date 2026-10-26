@@ -109,14 +109,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     {
         for (int i = 0; i < playerlist.count; i++)
         {
-            void *Player = (void *)playe if (Player == NULL)
+            void *Player = (void *)playerlist.addr[i];
+            if (Player == NULL)
             {
                 ImGui::Text("NULL");
                 continue;
             }
             Vector3 playerPos = GetPosition(Player);
             Vector3 WorldPos = WorldToScreenPoint(playerPos);
-            ImGui::Text("Player Pos: %d %d %d", PlayerPos.x, PlayerPos.y, PlayerPos.z);
+            ImGui::Text("Player Pos: %d %d %d", playerPos.x, playerPos.y, playerPos.z);
             ImGui::Text("World Pos: %d %d %d", WorldPos.x, WorldPos.y, WorldPos.z);
             if (WorldPos.z < 1.f)
             {
