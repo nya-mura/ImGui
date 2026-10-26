@@ -97,15 +97,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface) {
     ImGui::Text("Test");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
-    ImGui::Checkbox("Line", &line);
+    ImGui::Checkbox("Esp Line", &line);
     ImGui::End();
 
-
-    // ImVec2 position = ImVec2(100.0f, 50.0f); 
-    // ImU32 text_color = ImColor(255, 255, 255, 255);
-    // char text[64];
-    // snprintf(text, sizeof(text), "Count: %d\n", playerlist.count);
-    // imdraw->AddText(position,text_color, text);
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -124,10 +118,7 @@ void *sylphy(void*) {
         sleep(4);
     }
     LOGI("Found lib 0x%lx", base);
-    LOGI("Before Il2CppAttach");
-    Il2CppAttach(libName);
-    LOGI("After Il2CppAttach");
-    LOGI("Attach");
+
     void *egl =dlopen("libEGL.so", RTLD_NOW);
     if (!egl) {
         return NULL;
