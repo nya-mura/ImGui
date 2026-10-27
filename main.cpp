@@ -184,7 +184,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
             
             ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
-            void** something = *(void**)((uintptr_t)Player + 268);
+            void** something = (void**)((uintptr_t)Player + 268);
             void* animator = *something;
             if (animator == NULL)
             {
