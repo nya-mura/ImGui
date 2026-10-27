@@ -169,8 +169,12 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 continue;
             }
+            if (playerHealth == 0)
+            {
+                continue;
+            }
             
-            ImGui::GetBackgroundDrawList()->AddCircle(point, 3.0f, IM_COL32(255, 0, 0, 255), 16, 2.0f);
+            ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
 
         }
     }
