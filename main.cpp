@@ -125,7 +125,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         int (*Height)() = (int(*)())get_height;
         float (*Health)(void*) = (float(*)(void*))get_health;
         int (*Team)(void*) = (int(*)(void*))get_TeamNumber;
-        void* (Bone)(void*, int) = (void*(*)(void*, int))GetBoneTransform;
+        void* (*Bone)(void*, int) = (void*(*)(void*, int))GetBoneTransform;
         int width = Width();
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
