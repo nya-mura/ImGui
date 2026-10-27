@@ -111,6 +111,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         uintptr_t WorldToScreenPoint_Injected = base + 0x4262464;
         uintptr_t get_width = base + 0x426ba38;
         uintptr_t get_height = base + 0x426ba60;
+        uintptr_t get_health = base + 0x1f95944;
+        uintptr_t get_TeamNumber = base + 0x1f95e44;
+        uintptr_t GetBoneTransform = base + 0x42585e4;
+
     
 
         void* (*Transform)(void*) = (void*(*)(void*))get_transform;
@@ -119,7 +123,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         void* (*Camera)() = (void*(*)())get_MainCamera;
         int (*Width)() = (int(*)())get_width;
         int (*Height)() = (int(*)())get_height;
-
+        float (*Health)(void*) = (float(*)(void*))get_health;
+        int (*Team)(void*) = (int(*)(void*))get_TeamNumber;
+        void* (Bone)(void*, int) = (void*(*)(void*, int))GetBoneTransform;
         int width = Width();
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
@@ -132,6 +138,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 ImGui::Text("Player NULL");
                 continue;
             }
+            float playerHealth = Health(Player);
+            int playerTeam = Team(Player);
             ImGui::Text("Player [%d] %p", i, Player);
             void* playerTransform = Transform(Player);
             if (playerTransform == NULL) {
@@ -147,18 +155,22 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             ImGui::Text("Camera %p", camera);
             Vector3 playerPos;
             Position(playerTransform, &playerPos);
-            ImGui::Text("Player Pos: %2.f %2.f %2.f", playerPos.x, playerPos.y, playerPos.z);
+            ImGui::Text("[%d] Player Pos: %2.f %2.f %2.f Health %3.f", playerTeam, playerPos.x, playerPos.y, playerPos.z, playerHealth);
             Vector3 worldpos = {0};
             World(camera, &playerPos, 2, &worldpos);
-            ImGui::Text("Point %2.f %2.f", worldpos.x, worldpos.y);
+            // ImGui::Text("Point %2.f %2.f", worldpos.x, worldpos.y);
 
             if (worldpos.z < 1.f)
             {
                 continue;
             }
             ImVec2 point(worldpos.x, height - worldpos.y);
-
-            ImGui::GetBackgroundDrawList()->AddCircle(point, 5.0f, IM_COL32(255, 0, 0, 255), 16, 2.0f);
+            if (playerTeam == 0)
+            {
+                continue;
+            }
+            
+            ImGui::GetBackgroundDrawList()->AddCircle(point, 3.0f, IM_COL32(255, 0, 0, 255), 16, 2.0f);
 
         }
     }
