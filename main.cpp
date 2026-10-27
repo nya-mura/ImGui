@@ -105,19 +105,20 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
     if (debug)
     {
-        uintptr_t get_transform = base + RVA_get_transform;
-        uintptr_t get_position = base + RVA_get_position;
-        uintptr_t get_main = base + RVA_get_main;
-        uintptr_t WorldToScreenPoint = base + RVA_WorldToScreenPoint;
-        uintptr_t get_width = base + RVA_get_width;
-        uintptr_t get_height = base + RVA_get_height;
+        uintptr_t get_transform = base + 0x428dac0;
+        uintptr_t get_position_Injected = base + 0x4299c5c;
+        uintptr_t get_MainCamera = base + 0x1f17ccc;
+        uintptr_t WorldToScreenPoint_Injected = base + 0x4262464;
+        uintptr_t get_width = base + 0x426ba38;
+        uintptr_t get_height = base + 0x426ba60;
+    
+
         void* (*Transform)(void*) = (void*(*)(void*))get_transform;
-        Vector3 (*Position)(void*) = (Vector3(*)(void*))get_position;
-        void* (*Main)() = (void*(*)())get_main;
-        Vector3 (*World)(void*, Vector3) = (Vector3(*)(void*, Vector3))WorldToScreenPoint;
+        void (*Position)(void*, Vector3*) = (void(*)(void*, Vector3*))get_position_Injected;
+        void (*World)(void*, Vector3*, int, Vector3*) = (void(*)(void*, Vector3*, int, Vector3*))WorldToScreenPoint_Injected;
+        void* (*Camera)() = (void*(*)())get_MainCamera;
         int (*Width)() = (int(*)())get_width;
         int (*Height)() = (int(*)())get_height;
-
 
         int width = Width();
         int height = Height();
@@ -138,21 +139,26 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 continue;
             }
             ImGui::Text("Transform [%d] %p", i, playerTransform);
-            void* camera = Main();
+            void* camera = Camera();
             if (camera == NULL) {
                 ImGui::Text("Camera not found NULL");
                 continue;
             }
-            ImGui::Text("Main %p", camera);
+            ImGui::Text("Camera %p", camera);
+            Vector3 playerPos;
+            Position(playerTransform, &playerPos);
+            ImGui::Text("Player Pos: %2.f %2.f %2.f", playerPos.x, playerPos.y, playerPos.z);
+            Vector3 worldpos = {0};
+            World(camera, &playerPos, 2, &worldpos);
+            ImGui::Text("Point %2.f %2.f", worldpos.x, worldpos.y);
 
-            Vector3 playerPos = Position(playerTransform);
-            Vector3 WorldPos = World(camera, playerPos);
-            LOGI("Player Pos: %d %d %d", playerPos.x, playerPos.y, playerPos.z);
-            LOGI("World Pos: %d %d %d", WorldPos.x, WorldPos.y, WorldPos.z);
-            // if (WorldPos.z < 1.f)
-            // {
-            //     continue;
-            // }
+            if (worldpos.z < 1.f)
+            {
+                continue;
+            }
+            ImVec2 point(worldpos.x, height - worldpos.y);
+
+            ImGui::GetBackgroundDrawList()->AddCircle(point, 5.0f, IM_COL32(255, 0, 0, 255), 16, 2.0f);
 
         }
     }

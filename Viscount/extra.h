@@ -1,10 +1,10 @@
 typedef struct {
-    int x;
-    int y;
+    float x;
+    float y;
 } Vector2;
 
 typedef struct {
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
 } Vector3;
