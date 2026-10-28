@@ -198,37 +198,44 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
-            for (int i = 0; i < 19; i++)
+            void* boneTransform = Bone(animator, 1);
+            if (boneTransform == NULL)
             {
-                void *boneTransform = Bone(animator, i);
-
-                if (boneTransform == NULL)
-                {
-                    ImGui::Text("BoneTransform NULL");
-                    continue;
-                }
-                ImGui::Text("BoneTransform %p", boneTransform);
-                Position(boneTransform, &bonePosition[i]);
-                World(camera, &bonePosition[i], 2, &boneWorld[i]);
+                ImGui::Text("Bone Transform NULL");
+                continue;
             }
-            for (int i = 0; i < pairCount; i++)
-            {
-                int from = skeleton[i].from;
-                int to = skeleton[i].to;
+            ImGui::Text("Bone Transform %p", boneTransform);
+            // for (int i = 0; i < 19; i++)
+            // {
+            //     void *boneTransform = Bone(animator, i);
 
-                Vector3 a = boneWorld[from];
-                Vector3 b = boneWorld[to];
+            //     if (boneTransform == NULL)
+            //     {
+            //         ImGui::Text("BoneTransform NULL");
+            //         continue;
+            //     }
+            //     ImGui::Text("BoneTransform %p", boneTransform);
+            //     Position(boneTransform, &bonePosition[i]);
+            //     World(camera, &bonePosition[i], 2, &boneWorld[i]);
+            // }
+            // for (int i = 0; i < pairCount; i++)
+            // {
+            //     int from = skeleton[i].from;
+            //     int to = skeleton[i].to;
 
-                if (a.z < 1.f || b.z < 1.f)
-                {
-                    continue;
-                }
-                ImGui::GetBackgroundDrawList()->AddLine(
-                    ImVec2(a.x, height - a.y),
-                    ImVec2(b.x, height - b.y),
-                    IM_COL32(255, 255, 255, 255),
-                    2.0f);
-            }
+            //     Vector3 a = boneWorld[from];
+            //     Vector3 b = boneWorld[to];
+
+            //     if (a.z < 1.f || b.z < 1.f)
+            //     {
+            //         continue;
+            //     }
+            //     ImGui::GetBackgroundDrawList()->AddLine(
+            //         ImVec2(a.x, height - a.y),
+            //         ImVec2(b.x, height - b.y),
+            //         IM_COL32(255, 255, 255, 255),
+            //         2.0f);
+            // }
         }
     }
     ImGui::End();
