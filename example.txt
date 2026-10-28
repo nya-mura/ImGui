@@ -81,3 +81,20 @@ for (int i = 0; i < pairCount; i++)
         2.0f
     );
 }
+
+if (playerHealth == 0)
+{
+    continue;
+}
+
+// Allocate a buffer for the C-string
+char healthBuffer[16]; 
+
+// Format the integer into the C-string buffer
+snprintf(healthBuffer, sizeof(healthBuffer), "%d", playerHealth);
+
+// Offset the position slightly to the right
+ImVec2 textPos = ImVec2(point.x + 10.0f, point.y - 6.0f); 
+
+// Draw the C-string directly
+ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
