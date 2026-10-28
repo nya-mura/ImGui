@@ -100,7 +100,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Text("fwd");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
-    ImGui::Checkbox("Esp Line", &line);
+    ImGui::Checkbox("Test", &test);
     ImGui::Checkbox("Debug", &debug);
 
     if (debug)
