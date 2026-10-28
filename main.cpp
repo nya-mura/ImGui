@@ -188,7 +188,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
 
             char healthBuffer[32];
-            snprintf(healthBuffer, sizeof(healthBuffer), "Health %d", playerHealth);
+            snprintf(healthBuffer, sizeof(healthBuffer), "Health %3.f", playerHealth);
             ImVec2 textPos = ImVec2(point.x + 10.0f, point.y - 6.0f); 
             ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
 
