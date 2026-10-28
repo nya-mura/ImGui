@@ -114,6 +114,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         uintptr_t get_health = base + 0x1f95944;
         uintptr_t get_TeamNumber = base + 0x1f95e44;
         uintptr_t get_isLocalPlayer = base + 0x1f94b9c;
+        uintptr_t GetBoneTransform = base + 0x42585e4;
 
         void *(*Transform)(void *) = (void *(*)(void *))get_transform;
         void (*Position)(void *, Vector3 *) = (void (*)(void *, Vector3 *))get_position_Injected;
@@ -124,6 +125,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         float (*Health)(void *) = (float (*)(void *))get_health;
         int (*Team)(void *) = (int (*)(void *))get_TeamNumber;
         bool (*Local)(void *) = (bool (*)(void *))get_isLocalPlayer;
+        void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
 
         int width = Width();
         int height = Height();
@@ -137,6 +139,35 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 ImGui::Text("Player NULL");
                 continue;
+            }
+            void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
+            if (ThirdPersonAnimatorHelper == NULL)
+            {
+                continue;
+            }
+            void *animator = (void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
+
+            if (animator == NULL)
+            {
+                ImGui::Text("Animator is NULL");
+                continue;
+            }
+            ImGui::Text("Animator %p", animator);
+            Vector3 bonePosition[19] = {};
+            Vector3 boneWorld[19] = {};
+
+            ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
+            
+
+            if (test1)
+            {
+                void *boneTransform = Bone(animator, 1);
+                if (boneTransform == NULL)
+                {
+                    ImGui::Text("Bone Transform NULL");
+                    continue;
+                }
+                ImGui::Text("Bone Transform %p", boneTransform);
             }
             bool localPlayer = Local(Player);
             if (localPlayer)
@@ -187,35 +218,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
 
             ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
-            void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
-            if (ThirdPersonAnimatorHelper == NULL)
-            {
-                continue;
-            }
-            void *animator = (void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
 
-            if (animator == NULL)
-            {
-                ImGui::Text("Animator is NULL");
-                continue;
-            }
-            ImGui::Text("Animator %p", animator);
-            Vector3 bonePosition[19] = {};
-            Vector3 boneWorld[19] = {};
-            uintptr_t GetBoneTransform = base + 0x42585e4;
-            ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
-            void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
-
-            if (test1)
-            {
-                void *boneTransform = Bone(animator, 1);
-                if (boneTransform == NULL)
-                {
-                    ImGui::Text("Bone Transform NULL");
-                    continue;
-                }
-                ImGui::Text("Bone Transform %p", boneTransform);
-            }
             // for (int i = 0; i < 19; i++)
             // {
             //     void *boneTransform = Bone(animator, i);
