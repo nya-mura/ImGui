@@ -202,10 +202,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 void *boneTransform = Bone(animator, i);
 
-                if (boneTransform != NULL)
+                if (boneTransform == NULL)
                 {
-                    Position(boneTransform, &bonePosition[i]);
+                    ImGui::Text("BoneTransform NULL");
+                    continue;
                 }
+                ImGui::Text("BoneTransform %p", boneTransform);
+                Position(boneTransform, &bonePosition[i]);
                 World(camera, &bonePosition[i], 2, &boneWorld[i]);
             }
             for (int i = 0; i < pairCount; i++)
