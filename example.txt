@@ -1,0 +1,83 @@
+int pairCount = sizeof(skeleton) / sizeof(skeleton[0]);
+
+for (int i = 0; i < pairCount; i++) {
+    Vector3 worldA{}, worldB{};
+    Vector3 screenA{}, screenB{};
+
+    void* transformA = GetBoneTransform(animator, skeleton[i].from);
+    void* transformB = GetBoneTransform(animator, skeleton[i].to);
+
+    if (!transformA || !transformB)
+        continue;
+
+    Position(transformA, &worldA);
+    Position(transformB, &worldB);
+
+    World(camera, worldA, 2, &screenA);
+    World(camera, worldB, 2, &screenB);
+
+    if (screenA.z <= 0.0f || screenB.z <= 0.0f)
+        continue;
+
+    ImGui::GetBackgroundDrawList()->AddLine(
+        ImVec2(screenA.x, screenHeight - screenA.y),
+        ImVec2(screenB.x, screenHeight - screenB.y),
+        IM_COL32(255, 255, 255, 255),
+        2.0f
+    );
+}
+Vector3 bonePositions[19];
+
+Vector3 bonePositions[19] = {};
+
+for (int i = 0; i < 19; i++) {
+    void* transform = GetBoneTransform(animator, i);
+
+    if (transform != nullptr) {
+        Position(transform, &bonePositions[i]);
+    }
+}
+
+int pairCount = sizeof(skeleton) / sizeof(skeleton[0]);
+
+for (int i = 0; i < pairCount; i++) {
+    int boneA = skeleton[i].from;
+    int boneB = skeleton[i].to;
+
+    Vector3 screenA = {};
+    Vector3 screenB = {};
+
+    World(camera, bonePositions[boneA], 2, &screenA);
+    World(camera, bonePositions[boneB], 2, &screenB);
+
+    if (screenA.z <= 0.0f || screenB.z <= 0.0f)
+        continue;
+
+    ImGui::GetBackgroundDrawList()->AddLine(
+        ImVec2(screenA.x, screenHeight - screenA.y),
+        ImVec2(screenB.x, screenHeight - screenB.y),
+        IM_COL32(255, 255, 255, 255),
+        2.0f
+    );
+}
+Vector3 bonePositions[19] = {};
+Vector3 screenPositions[19] = {};
+
+for (int i = 0; i < pairCount; i++)
+{
+    int from = skeleton[i].from;
+    int to = skeleton[i].to;
+
+    Vector3 a = screenPositions[from];
+    Vector3 b = screenPositions[to];
+
+    if (a.z <= 0.0f || b.z <= 0.0f)
+        continue;
+
+    ImGui::GetBackgroundDrawList()->AddLine(
+        ImVec2(a.x, screenHeight - a.y),
+        ImVec2(b.x, screenHeight - b.y),
+        IM_COL32(255, 255, 255, 255),
+        2.0f
+    );
+}

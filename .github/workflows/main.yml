@@ -1,9 +1,5 @@
 name: Build Android Library
 
-on:
-  push:
-    branches: [ "ff" ]
-  workflow_dispatch: # <--- THIS ENABLES THE MANUAL BUTTON!
 
 jobs:
   build-android:

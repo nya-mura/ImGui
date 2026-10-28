@@ -45,6 +45,7 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
 #include "Viscount/memory.h"
 #include "hack/offset.h"
 #include "hack/class.h"
+#include "hack/bone.h"
 #include "hack/esp.h"
 #include "touch.h"
 
@@ -101,8 +102,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Checkbox("Esp Line", &line);
     ImGui::Checkbox("Debug", &debug);
 
-
-
     if (debug)
     {
         uintptr_t get_transform = base + 0x428dac0;
@@ -116,18 +115,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         uintptr_t get_isLocalPlayer = base + 0x1f94b9c;
         uintptr_t GetBoneTransform = base + 0x42585e4;
 
-    
-
-        void* (*Transform)(void*) = (void*(*)(void*))get_transform;
-        void (*Position)(void*, Vector3*) = (void(*)(void*, Vector3*))get_position_Injected;
-        void (*World)(void*, Vector3*, int, Vector3*) = (void(*)(void*, Vector3*, int, Vector3*))WorldToScreenPoint_Injected;
-        void* (*Camera)() = (void*(*)())get_MainCamera;
-        int (*Width)() = (int(*)())get_width;
-        int (*Height)() = (int(*)())get_height;
-        float (*Health)(void*) = (float(*)(void*))get_health;
-        int (*Team)(void*) = (int(*)(void*))get_TeamNumber;
-        bool (*Local)(void*) = (bool(*)(void*))get_isLocalPlayer;
-        void* (*Bone)(void*, int) = (void*(*)(void*, int))GetBoneTransform;
+        void *(*Transform)(void *) = (void *(*)(void *))get_transform;
+        void (*Position)(void *, Vector3 *) = (void (*)(void *, Vector3 *))get_position_Injected;
+        void (*World)(void *, Vector3 *, int, Vector3 *) = (void (*)(void *, Vector3 *, int, Vector3 *))WorldToScreenPoint_Injected;
+        void *(*Camera)() = (void *(*)())get_MainCamera;
+        int (*Width)() = (int (*)())get_width;
+        int (*Height)() = (int (*)())get_height;
+        float (*Health)(void *) = (float (*)(void *))get_health;
+        int (*Team)(void *) = (int (*)(void *))get_TeamNumber;
+        bool (*Local)(void *) = (bool (*)(void *))get_isLocalPlayer;
+        void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
         int width = Width();
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
@@ -146,21 +143,27 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 myTeamId = Team(Player);
             }
+            else
+            {
+                myTeamId = -1:
+            }
             float playerHealth = Health(Player);
             int playerTeam = Team(Player);
-            ImGui::Text("Player [%d] %p", i, Player);
-            void* playerTransform = Transform(Player);
-            if (playerTransform == NULL) {
+            // ImGui::Text("Player [%d] %p", i, Player);
+            void *playerTransform = Transform(Player);
+            if (playerTransform == NULL)
+            {
                 ImGui::Text("Player Transform NULL");
                 continue;
             }
-            ImGui::Text("Transform [%d] %p", i, playerTransform);
-            void* camera = Camera();
-            if (camera == NULL) {
+            // ImGui::Text("Transform [%d] %p", i, playerTransform);
+            void *camera = Camera();
+            if (camera == NULL)
+            {
                 ImGui::Text("Camera not found NULL");
                 continue;
             }
-            ImGui::Text("Camera %p", camera);
+            // ImGui::Text("Camera %p", camera);
             Vector3 playerPos;
             Position(playerTransform, &playerPos);
             // ImGui::Text("Team: [%d] Player Pos: %2.f %2.f %2.f Health: %3.f", playerTeam, playerPos.x, playerPos.y, playerPos.z, playerHealth);
@@ -182,16 +185,47 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 continue;
             }
-            
+
             ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
-            void** something = (void**)((uintptr_t)Player + 268);
-            void* animator = *something;
+            void **something = (void **)((uintptr_t)Player + 268);
+            void *animator = *something;
             if (animator == NULL)
             {
                 ImGui::Text("Animator is NULL");
                 continue;
             }
             ImGui::Text("Animator %p", animator);
+
+            Vector3 bonePositions[19] = {};
+            Vector3 boneWorld[19] = {};
+            for (int i = 0; i < 19; i++)
+            {
+                void *boneTransform = Bone(animator, i);
+
+                if (boneTransform != NULL)
+                {
+                    Position(boneTransform, &bonePosition[i]);
+                }
+                World(camera, &bonePosition[i], 2, &boneWorld);
+            }
+            for (int i = 0; i < pairCount; i++)
+            {
+                int from = skeleton.from[i];
+                int to = skeleton.from(i);
+
+                Vector3 a = boneWorld[from];
+                Vector3 b = boneWorld[to];
+
+                if (a.z < 1.f || b.z < 1.f)
+                {
+                    continue;
+                }
+                ImGui::GetBackgroundDrawList()->AddLine(
+                    ImVec2(a.x, screenHeight - a.y),
+                    ImVec2(b.x, screenHeight - b.y),
+                    IM_COL32(255, 255, 255, 255),
+                    2.0f);
+            }
         }
     }
     ImGui::End();
