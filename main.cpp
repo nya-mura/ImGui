@@ -22,7 +22,7 @@
 uintptr_t base = 0;
 
 bool debug = false;
-bool test = false;
+bool test1 = false;
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
@@ -100,7 +100,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Text("fwd");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
-    ImGui::Checkbox("Test", &test);
+    ImGui::Checkbox("Test", &test1);
     ImGui::Checkbox("Debug", &debug);
 
     if (debug)
@@ -206,7 +206,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
             void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
 
-            if (test)
+            if (test1)
             {
                 void *boneTransform = Bone(animator, 1);
                 if (boneTransform == NULL)
