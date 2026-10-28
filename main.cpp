@@ -145,7 +145,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
             else
             {
-                myTeamId = -1:
+                myTeamId = -1;
             }
             float playerHealth = Health(Player);
             int playerTeam = Team(Player);
@@ -210,8 +210,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
             for (int i = 0; i < pairCount; i++)
             {
-                int from = skeleton.from[i];
-                int to = skeleton.from(i);
+                int from = skeleton[i].from
+                int to = skeleton[i].to
 
                 Vector3 a = boneWorld[from];
                 Vector3 b = boneWorld[to];

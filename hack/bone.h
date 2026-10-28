@@ -24,4 +24,4 @@ struct BonePair skeleton[] = {
     {4, 6}    // RightLowerLeg -> RightFoot
 };
 
-size_t pairCount = sizeof(BonePair) / sizeof(BonePair[0]);
+size_t pairCount = sizeof(skeleton) / sizeof(skeleton[0]);
