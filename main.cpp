@@ -150,18 +150,23 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             if (animator == NULL)
             {
                 ImGui::Text("Animator is NULL");
+                LOGI("Animator is NULL");
                 continue;
             }
             ImGui::Text("Animator %p", animator);
+            LOGI("Animator %p", animator);
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
 
             ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
+            LOGI("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform");
             
 
             if (test1)
             {
+                LOGI("Reach test1);
                 void *boneTransform = Bone(animator, 1);
+                LOGI("Bone Transform %p", boneTransform);
                 if (boneTransform == NULL)
                 {
                     ImGui::Text("Bone Transform NULL");
