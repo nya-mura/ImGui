@@ -196,7 +196,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
             ImGui::Text("Animator %p", animator);
 
-            Vector3 bonePositions[19] = {};
+            Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
             for (int i = 0; i < 19; i++)
             {
