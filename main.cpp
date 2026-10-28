@@ -105,27 +105,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
     if (debug)
     {
-        uintptr_t get_transform = base + 0x428dac0;
-        uintptr_t get_position_Injected = base + 0x4299c5c;
-        uintptr_t get_MainCamera = base + 0x1f17ccc;
-        uintptr_t WorldToScreenPoint_Injected = base + 0x4262464;
-        uintptr_t get_width = base + 0x426ba38;
-        uintptr_t get_height = base + 0x426ba60;
-        uintptr_t get_health = base + 0x1f95944;
-        uintptr_t get_TeamNumber = base + 0x1f95e44;
-        uintptr_t get_isLocalPlayer = base + 0x1f94b9c;
-        uintptr_t GetBoneTransform = base + 0x42585e4;
 
-        void *(*Transform)(void *) = (void *(*)(void *))get_transform;
-        void (*Position)(void *, Vector3 *) = (void (*)(void *, Vector3 *))get_position_Injected;
-        void (*World)(void *, Vector3 *, int, Vector3 *) = (void (*)(void *, Vector3 *, int, Vector3 *))WorldToScreenPoint_Injected;
-        void *(*Camera)() = (void *(*)())get_MainCamera;
-        int (*Width)() = (int (*)())get_width;
-        int (*Height)() = (int (*)())get_height;
-        float (*Health)(void *) = (float (*)(void *))get_health;
-        int (*Team)(void *) = (int (*)(void *))get_TeamNumber;
-        bool (*Local)(void *) = (bool (*)(void *))get_isLocalPlayer;
-        void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
 
         int width = Width();
         int height = Height();
@@ -145,7 +125,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 continue;
             }
-            void *animator = (void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
+            void *animator = *(void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
 
             if (animator == NULL)
             {
