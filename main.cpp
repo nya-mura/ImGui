@@ -138,9 +138,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
 
-            ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
-            LOGI("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
-            
 
             if (test1)
             {
