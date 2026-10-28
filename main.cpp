@@ -22,6 +22,7 @@
 uintptr_t base = 0;
 
 bool debug = false;
+bool test = false;
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
@@ -113,7 +114,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         uintptr_t get_health = base + 0x1f95944;
         uintptr_t get_TeamNumber = base + 0x1f95e44;
         uintptr_t get_isLocalPlayer = base + 0x1f94b9c;
-        uintptr_t GetBoneTransform = base + 0x42585e4;
 
         void *(*Transform)(void *) = (void *(*)(void *))get_transform;
         void (*Position)(void *, Vector3 *) = (void (*)(void *, Vector3 *))get_position_Injected;
@@ -124,7 +124,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         float (*Health)(void *) = (float (*)(void *))get_health;
         int (*Team)(void *) = (int (*)(void *))get_TeamNumber;
         bool (*Local)(void *) = (bool (*)(void *))get_isLocalPlayer;
-        void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
+
         int width = Width();
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
@@ -192,7 +192,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 continue;
             }
-            void *animator = (void**)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
+            void *animator = (void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
 
             if (animator == NULL)
             {
@@ -202,13 +202,20 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             ImGui::Text("Animator %p", animator);
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
-            void* boneTransform = Bone(animator, Hips);
-            if (boneTransform == NULL)
+            uintptr_t GetBoneTransform = base + 0x42585e4;
+            ImGui::Text("GetBoneTransform offset 0x42585e4 address 0x%lx", GetBoneTransform);
+            void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
+
+            if (test)
             {
-                ImGui::Text("Bone Transform NULL");
-                continue;
+                void *boneTransform = Bone(animator, 1);
+                if (boneTransform == NULL)
+                {
+                    ImGui::Text("Bone Transform NULL");
+                    continue;
+                }
+                ImGui::Text("Bone Transform %p", boneTransform);
             }
-            ImGui::Text("Bone Transform %p", boneTransform);
             // for (int i = 0; i < 19; i++)
             // {
             //     void *boneTransform = Bone(animator, i);
