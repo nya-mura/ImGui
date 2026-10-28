@@ -206,7 +206,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     Position(boneTransform, &bonePosition[i]);
                 }
-                World(camera, &bonePosition[i], 2, &boneWorld);
+                World(camera, &bonePosition[i], 2, &boneWorld[i]);
             }
             for (int i = 0; i < pairCount; i++)
             {
