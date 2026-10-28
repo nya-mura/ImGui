@@ -84,14 +84,14 @@ void test()
     uintptr_t get_isLocalPlayer = base + 0x1f94b9c;
     uintptr_t GetBoneTransform = base + 0x42585e4;
 
-    void *(*Transform)(void *) = (void *(*)(void *))get_transform;
-    void (*Position)(void *, Vector3 *) = (void (*)(void *, Vector3 *))get_position_Injected;
-    void (*World)(void *, Vector3 *, int, Vector3 *) = (void (*)(void *, Vector3 *, int, Vector3 *))WorldToScreenPoint_Injected;
-    void *(*Camera)() = (void *(*)())get_MainCamera;
-    int (*Width)() = (int (*)())get_width;
-    int (*Height)() = (int (*)())get_height;
-    float (*Health)(void *) = (float (*)(void *))get_health;
-    int (*Team)(void *) = (int (*)(void *))get_TeamNumber;
-    bool (*Local)(void *) = (bool (*)(void *))get_isLocalPlayer;
-    void *(*Bone)(void *, int) = (void *(*)(void *, int))GetBoneTransform;
+    Transform = (void *(*)(void *))get_transform;
+    Position = (void (*)(void *, Vector3 *))get_position_Injected;
+    World = (void (*)(void *, Vector3 *, int, Vector3 *))WorldToScreenPoint_Injected;
+    Camera = (void *(*)())get_MainCamera;
+    Width = (int (*)())get_width;
+    Height = (int (*)())get_height;
+    Health = (float (*)(void *))get_health;
+    Team = (int (*)(void *))get_TeamNumber;
+    Local = (bool (*)(void *))get_isLocalPlayer;
+    Bone = (void *(*)(void *, int))GetBoneTransform;
 }
