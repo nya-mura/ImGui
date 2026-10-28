@@ -187,15 +187,19 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
 
             ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
-            void **something = (void **)((uintptr_t)Player + 268);
-            void *animator = *something;
+            void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
+            if (ThirdPersonAnimatorHelper == NULL)
+            {
+                continue;
+            }
+            void *animator = (void**)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
+
             if (animator == NULL)
             {
                 ImGui::Text("Animator is NULL");
                 continue;
             }
             ImGui::Text("Animator %p", animator);
-
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
             void* boneTransform = Bone(animator, 1);
