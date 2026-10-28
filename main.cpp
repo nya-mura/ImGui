@@ -202,7 +202,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             ImGui::Text("Animator %p", animator);
             Vector3 bonePosition[19] = {};
             Vector3 boneWorld[19] = {};
-            void* boneTransform = Bone(animator, 1);
+            void* boneTransform = Bone(animator, Hips);
             if (boneTransform == NULL)
             {
                 ImGui::Text("Bone Transform NULL");
