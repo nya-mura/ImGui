@@ -210,8 +210,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             }
             for (int i = 0; i < pairCount; i++)
             {
-                int from = skeleton[i].from
-                int to = skeleton[i].to
+                int from = skeleton[i].from;
+                int to = skeleton[i].to;
 
                 Vector3 a = boneWorld[from];
                 Vector3 b = boneWorld[to];
@@ -221,8 +221,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     continue;
                 }
                 ImGui::GetBackgroundDrawList()->AddLine(
-                    ImVec2(a.x, screenHeight - a.y),
-                    ImVec2(b.x, screenHeight - b.y),
+                    ImVec2(a.x, height - a.y),
+                    ImVec2(b.x, height - b.y),
                     IM_COL32(255, 255, 255, 255),
                     2.0f);
             }
