@@ -25,9 +25,6 @@ bool aim = false;
 bool debug = false;
 bool test1 = false;
 int myTeamId = -1;
-void *local = NULL;
-void *enemy = NULL;
-
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -112,11 +109,14 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
         int width = Width();
         int height = Height();
+        
+        void *local = NULL;
+        void *enemy = NULL;
         ImGui::Text("Screen Width: %d", width);
         ImGui::Text("Screen Height: %d", height);
 
         ImGui::Text("Team id %d", myTeamId);
-
+        Vector3 localPos;
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
@@ -135,8 +135,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             bool localPlayer = Local(Player);
             if (localPlayer)
             {
-                ImGui::Text("local %p", Player);
+
                 local = Player;
+                Position(Player, &localPos);
+                ImGui::Text("local %p position %.2f %.2f %.2f", local, localPos.x, localPos.y, localPos.z);
                 myTeamId = Team(Player);
             }
             float playerHealth = Health(Player);
@@ -190,8 +192,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     continue;
                 }
-                Vector3 localPos;
-                Position(local, &localPos);
+
                 float dx = playerPos.x - localPos.x;
                 float dy = playerPos.y - localPos.y;
                 float dz = playerPos.z - localPos.z;
