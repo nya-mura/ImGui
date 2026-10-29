@@ -111,6 +111,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         ImGui::Text("Screen Width: %d", width);
         ImGui::Text("Screen Height: %d", height);
         int myTeamId = -1;
+        ImGui::Text("Team id %d", myTeamId);
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
@@ -119,11 +120,11 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 ImGui::Text("Player NULL");
                 continue;
             }
-
+            int playerTeam = Team(Player);
             bool isMine = *(bool *)((uintptr_t)Player + 0x22c);
             if (isMine)
             {
-                ImGui::Text("isMine %p", Player);
+                ImGui::Text("isMine %p Team %d", Player, playerTeam);
             }
 
             bool localPlayer = Local(Player);
@@ -137,8 +138,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 myTeamId = -1;
             }
             float playerHealth = Health(Player);
-            int playerTeam = Team(Player);
-            // ImGui::Text("Player [%d] %p", i, Player);
+
+            ImGui::Text("Player [%d] %p", i, Player);
             void *playerTransform = Transform(Player);
             if (playerTransform == NULL)
             {
