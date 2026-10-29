@@ -20,7 +20,7 @@
 #include "Viscount/extra.h"
 
 uintptr_t base = 0;
-
+bool bone;
 bool debug = false;
 bool test1 = false;
 
@@ -106,7 +106,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     if (debug)
     {
 
-
         int width = Width();
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
@@ -120,26 +119,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 ImGui::Text("Player NULL");
                 continue;
             }
-            void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
-            if (ThirdPersonAnimatorHelper == NULL)
-            {
-                continue;
-            }
-            void *animator = *(void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
-
-            // void *animator = *(void **)((uintptr_t)Player + 268);
-
-            if (animator == NULL)
-            {
-                ImGui::Text("Animator is NULL");
-                LOGI("Animator is NULL");
-                continue;
-            }
-            ImGui::Text("Animator %p", animator);
-            LOGI("Animator %p", animator);
-            Vector3 bonePosition[19] = {};
-            Vector3 boneWorld[19] = {};
-
 
             bool localPlayer = Local(Player);
             if (localPlayer)
@@ -173,7 +152,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             Vector3 worldpos = {0};
             World(camera, &playerPos, 2, &worldpos);
 
-            if (worldpos.z <=  0.0f)
+            if (worldpos.z <= 0.0f)
             {
                 continue;
             }
@@ -191,46 +170,117 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
             char healthBuffer[32];
             snprintf(healthBuffer, sizeof(healthBuffer), "Health %3.f", playerHealth);
-            ImVec2 textPos = ImVec2(point.x + 10.0f, point.y - 6.0f); 
+            ImVec2 textPos(point.x + 10.0f, point.y - 6.0f);
             ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
 
-            // ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
-            if (test1)
+            void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)Player + 0x270);
+            if (ThirdPersonBodyPartReferences == NULL)
             {
-                for (int i = 0; i < 54; i++)
-                {
-                    void *boneTransform = Bone(animator, i);
-
-                    if (boneTransform == NULL)
-                    {
-                        ImGui::Text("BoneTransform NULL");
-                        LOGI("BoneTransform NULL for %d", i);
-                        continue;
-                    }
-                    ImGui::Text("BoneTransform %p", boneTransform);
-                    LOGI("BoneTransform %p for %d", boneTransform, i);
-                    Position(boneTransform, &bonePosition[i]);
-                    World(camera, &bonePosition[i], 2, &boneWorld[i]);
-                }
-                for (int i = 0; i < pairCount; i++)
-                {
-                    int from = skeleton[i].from;
-                    int to = skeleton[i].to;
-
-                    Vector3 a = boneWorld[from];
-                    Vector3 b = boneWorld[to];
-
-                    if (a.z <= 0.0f || b.z <= 0.0f)
-                    {
-                        continue;
-                    }
-                    ImGui::GetBackgroundDrawList()->AddLine(
-                        ImVec2(a.x, height - a.y),
-                        ImVec2(b.x, height - b.y),
-                        IM_COL32(255, 0, 255, 255),
-                        2.0f);
-               }
+                continue;
             }
+            void *bones[11] =
+                {
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x20), // 0: Head
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x28), // 1: Spine
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x30), // 2: Hips
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x38), // 3: LeftUpperArm
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x40), // 4: LeftLowerArm
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x48), // 5: RightUpperArm
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x50), // 6: RightLowerArm
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x58), // 7: LeftUpperLeg
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x60), // 8: LeftLowerLeg
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x68), // 9: RightUpperLeg
+                    *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x70)  // 10: RightLowerLeg
+            };
+
+            Vector3 bonePos[11] = {};
+            Vector3 boneWorld[11] = {};
+
+            for (int i = 0; i < 11; i++)
+            {
+                if (bones[i] == NULL)
+                {
+                    continue;
+                }
+                Position(bones[i], &bonePos[i]);
+                World(camera, &bonePos[i], 2, &boneWorld[i]);
+            }
+
+            for (int i = 0; i < pairCount; i++)
+            {
+                int from = skeleton[i].from;
+                int to = skeleton[i].to;
+
+                Vector3 a = boneWorld[from];
+                Vector3 b = boneWorld[to];
+
+                if (a.z <= 0.0f || b.z <= 0.0f)
+                {
+                    continue;
+                }
+
+                ImGui::GetBackgroundDrawList()->AddLine(
+                    ImVec2(a.x, height - a.y),
+                    ImVec2(b.x, height - b.y),
+                    IM_COL32(255, 0, 255, 255),
+                    2.0f);
+            }
+            // ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
+            // void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
+            // if (ThirdPersonAnimatorHelper == NULL)
+            // {
+            //     continue;
+            // }
+            // void *animator = *(void **)((uintptr_t)ThirdPersonAnimatorHelper + 0x38);
+
+            // // void *animator = *(void **)((uintptr_t)Player + 268);
+
+            // if (animator == NULL)
+            // {
+            //     ImGui::Text("Animator is NULL");
+            //     LOGI("Animator is NULL");
+            //     continue;
+            // }
+            // ImGui::Text("Animator %p", animator);
+            // LOGI("Animator %p", animator);
+            // Vector3 bonePosition[19] = {};
+            // Vector3 boneWorld[19] = {};
+
+            // {
+            //     for (int i = 0; i < 54; i++)
+            //     {
+            //         void *boneTransform = Bone(animator, i);
+
+            //         if (boneTransform == NULL)
+            //         {
+            //             ImGui::Text("BoneTransform NULL");
+            //             LOGI("BoneTransform NULL for %d", i);
+            //             continue;
+            //         }
+            //         ImGui::Text("BoneTransform %p", boneTransform);
+            //         LOGI("BoneTransform %p for %d", boneTransform, i);
+            //         Position(boneTransform, &bonePosition[i]);
+            //         World(camera, &bonePosition[i], 2, &boneWorld[i]);
+            //     }
+            //     for (int i = 0; i < pairCount; i++)
+            //     {
+            //         int from = skeleton[i].from;
+            //         int to = skeleton[i].to;
+
+            //         Vector3 a = boneWorld[from];
+            //         Vector3 b = boneWorld[to];
+
+            //         if (a.z <= 0.0f || b.z <= 0.0f)
+            //         {
+            //             continue;
+            //         }
+            //         ImGui::GetBackgroundDrawList()->AddLine(
+            //             ImVec2(a.x, height - a.y),
+            //             ImVec2(b.x, height - b.y),
+            //             IM_COL32(255, 0, 255, 255),
+            //             2.0f);
+            //    }
+            // }
         }
     }
     ImGui::End();

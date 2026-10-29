@@ -98,3 +98,109 @@ ImVec2 textPos = ImVec2(point.x + 10.0f, point.y - 6.0f);
 
 // Draw the C-string directly
 ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
+
+
+This game already exposes the third-person skeleton directly — use Player + 0x270 (ThirdPersonBodyPartReferences) instead:
+void* refs = *(void**)((uintptr_t)Player + 0x270);
+if (refs) {
+    void* head          = *(void**)((uintptr_t)refs + 0x20);
+    void* spine         = *(void**)((uintptr_t)refs + 0x28);
+    void* hips          = *(void**)((uintptr_t)refs + 0x30);
+    void* leftUpperArm  = *(void**)((uintptr_t)refs + 0x38);
+    void* leftLowerArm  = *(void**)((uintptr_t)refs + 0x40);
+    void* rightUpperArm = *(void**)((uintptr_t)refs + 0x48);
+    void* rightLowerArm = *(void**)((uintptr_t)refs + 0x50);
+    void* leftUpperLeg  = *(void**)((uintptr_t)refs + 0x58);
+    void* leftLowerLeg  = *(void**)((uintptr_t)refs + 0x60);
+    void* rightUpperLeg = *(void**)((uintptr_t)refs + 0x68);
+    void* rightLowerLeg = *(void**)((uintptr_t)refs + 0x70);
+    void* transforms    = *(void**)((uintptr_t)refs + 0x78); // Il2CppArray<Transform*>
+}
+
+void *refs = *(void **)((uintptr_t)Player + 0x270);
+
+if (refs == NULL)
+{
+    continue;
+}
+
+void *bones[11] =
+{
+    *(void **)((uintptr_t)refs + 0x20), // 0: Head
+    *(void **)((uintptr_t)refs + 0x28), // 1: Spine
+    *(void **)((uintptr_t)refs + 0x30), // 2: Hips
+    *(void **)((uintptr_t)refs + 0x38), // 3: LeftUpperArm
+    *(void **)((uintptr_t)refs + 0x40), // 4: LeftLowerArm
+    *(void **)((uintptr_t)refs + 0x48), // 5: RightUpperArm
+    *(void **)((uintptr_t)refs + 0x50), // 6: RightLowerArm
+    *(void **)((uintptr_t)refs + 0x58), // 7: LeftUpperLeg
+    *(void **)((uintptr_t)refs + 0x60), // 8: LeftLowerLeg
+    *(void **)((uintptr_t)refs + 0x68), // 9: RightUpperLeg
+    *(void **)((uintptr_t)refs + 0x70)  // 10: RightLowerLeg
+};
+
+Vector3 bonePos[11] = {};
+Vector3 boneScreen[11] = {};
+bool boneValid[11] = {};
+
+for (int i = 0; i < 11; i++)
+{
+    if (bones[i] == NULL)
+    {
+        continue;
+    }
+
+    Position(bones[i], &bonePos[i]);
+
+    World(camera, &bonePos[i], 2, &boneScreen[i]);
+
+    if (boneScreen[i].z > 0.0f)
+    {
+        boneValid[i] = true;
+    }
+}
+
+
+struct BonePair
+{
+    int from;
+    int to;
+};
+
+const BonePair skeleton[] =
+{
+    {0, 1},   // Head -> Spine
+    {1, 2},   // Spine -> Hips
+
+    {1, 3},   // Spine -> LeftUpperArm
+    {3, 4},   // LeftUpperArm -> LeftLowerArm
+
+    {1, 5},   // Spine -> RightUpperArm
+    {5, 6},   // RightUpperArm -> RightLowerArm
+
+    {2, 7},   // Hips -> LeftUpperLeg
+    {7, 8},   // LeftUpperLeg -> LeftLowerLeg
+
+    {2, 9},   // Hips -> RightUpperLeg
+    {9, 10}   // RightUpperLeg -> RightLowerLeg
+};
+
+const size_t pairCount = sizeof(skeleton) / sizeof(skeleton[0]);
+
+for (size_t i = 0; i < pairCount; i++)
+{
+    int from = skeleton[i].from;
+    int to = skeleton[i].to;
+
+    if (!boneValid[from] || !boneValid[to])
+    {
+        continue;
+    }
+
+    ImGui::GetBackgroundDrawList()->AddLine(
+        ImVec2(boneScreen[from].x, height - boneScreen[from].y),
+        ImVec2(boneScreen[to].x, height - boneScreen[to].y),
+        IM_COL32(255, 0, 255, 255),
+        2.0f
+    );
+}
