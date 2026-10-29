@@ -118,6 +118,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         ImGui::Text("Team id %d", myTeamId);
         Vector3 localPos;
         float closestDistanceSquared = FLT_MAX;
+        ImVec2 enemyPoint;
+        bool foundEnemy = false;
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
@@ -193,7 +195,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
             if (aim)
             {
-                
+
                 if (local == NULL)
                 {
                     continue;
@@ -210,15 +212,20 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
-                    ImGui::Text("Enemy %p", enemy);
-                    ImGui::GetBackgroundDrawList()->AddLine(
-                        ImVec2(width / 2.0f, height),
-                        point,
-                        IM_COL32(255, 0, 0, 255),
-                        2.0f);
+                    enemyPoint = point;
+                    foundEnemy = true;
                 }
             }
 
+            if (aim && foundEnemy)
+            {
+                ImGui::Text("Enemy %p", enemy);
+                ImGui::GetBackgroundDrawList()->AddLine(
+                    ImVec2(width / 2.0f, height),
+                    point,
+                    IM_COL32(255, 0, 0, 255),
+                    2.0f);
+            }
             void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)Player + 0x270);
             if (ThirdPersonBodyPartReferences == NULL)
             {
