@@ -23,7 +23,7 @@ uintptr_t base = 0;
 bool bone;
 bool debug = false;
 bool test1 = false;
-
+int myTeamId = -1;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -110,7 +110,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         int height = Height();
         ImGui::Text("Screen Width: %d", width);
         ImGui::Text("Screen Height: %d", height);
-        int myTeamId = -1;
+
         ImGui::Text("Team id %d", myTeamId);
         for (int i = 0; i < playerlist.count; i++)
         {
@@ -133,13 +133,9 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 ImGui::Text("local %p", Player);
                 myTeamId = Team(Player);
             }
-            else
-            {
-                myTeamId = -1;
-            }
-            float playerHealth = Health(Player);
+            playerHealth = Health(Player);
 
-            ImGui::Text("Player [%d] %p", i, Player);
+            ImGui::Text("Player [%d] %p Team", i, Player, playerTeam);
             void *playerTransform = Transform(Player);
             if (playerTransform == NULL)
             {
