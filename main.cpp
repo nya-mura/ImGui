@@ -137,8 +137,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
 
                 local = Player;
-                Position(Player, &localPos);
-                ImGui::Text("local %p position %.2f %.2f %.2f", local, localPos.x, localPos.y, localPos.z);
+                void* localTransform = Transform(local);
+                if (localTransform != NULL)
+                {
+                    Position(localTransform, &localPos);
+                }
+                
+                ImGui::Text("local %p position", local);
                 myTeamId = Team(Player);
             }
             float playerHealth = Health(Player);
@@ -204,7 +209,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
-                    ImGui::Text("Enemy %p", Player);
+                    ImGui::Text("Enemy %p", enemy);
+                    
                     ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
                 }
             }
