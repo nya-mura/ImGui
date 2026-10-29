@@ -120,9 +120,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 continue;
             }
 
+            bool isMine = *(bool *)((uintptr_t)Player + 0x22c);
+            if (isMine)
+            {
+                ImGui::Text("isMine %p", Player);
+            }
+
             bool localPlayer = Local(Player);
             if (localPlayer)
             {
+                ImGui::Text("local %p", Player);
                 myTeamId = Team(Player);
             }
             else
@@ -203,7 +210,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     ImGui::Text("Empty Bones %d", i);
                     continue;
                 }
-                ImGui::Text("Bone found %d", i);
+                // ImGui::Text("Bone found %d", i);
                 Position(bones[i], &bonePos[i]);
                 World(camera, &bonePos[i], 2, &boneWorld[i]);
             }
