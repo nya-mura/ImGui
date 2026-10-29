@@ -171,7 +171,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             Vector3 worldpos = {0};
             World(camera, &playerPos, 2, &worldpos);
 
-            if (worldpos.z < 1.f)
+            if (worldpos.z <=  0.0f)
             {
                 continue;
             }
@@ -202,9 +202,11 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     if (boneTransform == NULL)
                     {
                         ImGui::Text("BoneTransform NULL");
+                        LOGI("BoneTransform NULL for %d", i);
                         continue;
                     }
                     ImGui::Text("BoneTransform %p", boneTransform);
+                    LOGI("BoneTransform %p for %d", boneTransform, i);
                     Position(boneTransform, &bonePosition[i]);
                     World(camera, &bonePosition[i], 2, &boneWorld[i]);
                 }
@@ -216,7 +218,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     Vector3 a = boneWorld[from];
                     Vector3 b = boneWorld[to];
 
-                    if (a.z < 1.f || b.z < 1.f)
+                    if (a.z <= 0.0f || b.z <= 0.0f)
                     {
                         continue;
                     }
