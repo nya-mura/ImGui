@@ -200,8 +200,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
                 if (bones[i] == NULL)
                 {
+                    ImGui::Text("Empty Bones %d", i);
                     continue;
                 }
+                ImGui::Text("Bone found %d", i);
                 Position(bones[i], &bonePos[i]);
                 World(camera, &bonePos[i], 2, &boneWorld[i]);
             }
