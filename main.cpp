@@ -217,15 +217,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 }
             }
 
-            if (aim && foundEnemy)
-            {
-                ImGui::Text("Enemy %p", enemy);
-                ImGui::GetBackgroundDrawList()->AddLine(
-                    ImVec2(width / 2.0f, height),
-                    point,
-                    IM_COL32(255, 0, 0, 255),
-                    2.0f);
-            }
             void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)Player + 0x270);
             if (ThirdPersonBodyPartReferences == NULL)
             {
@@ -336,6 +327,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             //             2.0f);
             //    }
             // }
+        }
+        if (aim && foundEnemy)
+        {
+            ImGui::Text("Enemy %p", enemy);
+            ImGui::GetBackgroundDrawList()->AddLine(
+                ImVec2(width / 2.0f, height),
+                enemyPoint,
+                IM_COL32(255, 0, 0, 255),
+                2.0f);
         }
     }
     ImGui::End();
