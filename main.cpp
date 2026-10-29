@@ -109,7 +109,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
         int width = Width();
         int height = Height();
-        
+
         void *local = NULL;
         void *enemy = NULL;
         ImGui::Text("Screen Width: %d", width);
@@ -137,12 +137,12 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
 
                 local = Player;
-                void* localTransform = Transform(local);
+                void *localTransform = Transform(local);
                 if (localTransform != NULL)
                 {
                     Position(localTransform, &localPos);
                 }
-                
+
                 ImGui::Text("local %p position", local);
                 myTeamId = Team(Player);
             }
@@ -210,8 +210,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
                     ImGui::Text("Enemy %p", enemy);
-                    
-                    ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
+
+                    //
+                    ImGui::GetBackgroundDrawList()->AddLine(
+                        ImVec2(width / 2.0f, height),
+                        point,
+                        IM_COL32(255, 0, 0, 255),
+                        2.0f);
                 }
             }
 
