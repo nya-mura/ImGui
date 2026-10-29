@@ -20,10 +20,14 @@
 #include "Viscount/extra.h"
 
 uintptr_t base = 0;
-bool bone;
+bool bone = false;
+bool aim = false;
 bool debug = false;
 bool test1 = false;
 int myTeamId = -1;
+void *local = NULL;
+void *enemy = NULL;
+float closestDistanceSquared = FLT_MAX;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -80,7 +84,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
     static bool idk = false;
     static float value = 0.0f;
-    static bool debug = false;
     EGLint w, h;
     eglQuerySurface(dpy, surface, EGL_WIDTH, &w);
     eglQuerySurface(dpy, surface, EGL_HEIGHT, &h);
@@ -100,6 +103,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Text("fwd");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
+    ImGui::Text("Aim", &aim);
     ImGui::Checkbox("Test", &test1);
     ImGui::Checkbox("Debug", &debug);
 
@@ -112,6 +116,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         ImGui::Text("Screen Height: %d", height);
 
         ImGui::Text("Team id %d", myTeamId);
+
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
@@ -131,6 +136,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             if (localPlayer)
             {
                 ImGui::Text("local %p", Player);
+                local = Player;
                 myTeamId = Team(Player);
             }
             float playerHealth = Health(Player);
@@ -176,6 +182,31 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             snprintf(healthBuffer, sizeof(healthBuffer), "Health %3.f", playerHealth);
             ImVec2 textPos(point.x + 10.0f, point.y - 6.0f);
             ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
+
+            if (aim)
+            {
+
+                if (local == NULL)
+                {
+                    continue;
+                }
+                Vector3 localPos;
+                Position(local, &localPos);
+                float dx = playerPos.x - localPos.x;
+                float dy = playerPos.x - localPos.y;
+                float dz = player.z - localPos.z;
+
+                float worldDistanceSquared =
+                    dx * dx + dy * dy + dz * dz;
+
+                if (worldDistanceSquared > closestDistanceSquared)
+                {
+                    closestDistanceSquared = worldDistanceSquared;
+                    enemy = Player;
+                    ImGui::Text("Enemy %p", Player);
+                    ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
+                }
+            }
 
             void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)Player + 0x270);
             if (ThirdPersonBodyPartReferences == NULL)
@@ -231,7 +262,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     IM_COL32(255, 0, 255, 255),
                     2.0f);
             }
-            // ImGui::GetBackgroundDrawList()->AddCircle(point, 1.0f, IM_COL32(255, 0, 0, 255), 16, 3.0f);
+
             // void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
             // if (ThirdPersonAnimatorHelper == NULL)
             // {

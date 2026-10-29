@@ -204,3 +204,30 @@ for (size_t i = 0; i < pairCount; i++)
         2.0f
     );
 }
+
+void *closestEnemy = NULL;
+float closestDistanceSquared = FLT_MAX;
+
+for (int i = 0; i < playerCount; i++)
+{
+    void *enemy = players[i];
+
+    if (enemy == NULL)
+        continue;
+
+    Vector3 enemyWorld;
+    GetPosition(enemy, &enemyWorld);
+
+    float dx = enemyWorld.x - localWorld.x;
+    float dy = enemyWorld.y - localWorld.y;
+    float dz = enemyWorld.z - localWorld.z;
+
+    float worldDistanceSquared =
+        dx * dx + dy * dy + dz * dz;
+
+    if (worldDistanceSquared < closestDistanceSquared)
+    {
+        closestDistanceSquared = worldDistanceSquared;
+        closestEnemy = enemy;
+    }
+}
