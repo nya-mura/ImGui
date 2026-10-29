@@ -133,7 +133,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 ImGui::Text("local %p", Player);
                 myTeamId = Team(Player);
             }
-            playerHealth = Health(Player);
+            int playerHealth = Health(Player);
 
             ImGui::Text("Player [%d] %p Team", i, Player, playerTeam);
             void *playerTransform = Transform(Player);
