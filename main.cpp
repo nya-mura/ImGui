@@ -27,7 +27,7 @@ bool test1 = false;
 int myTeamId = -1;
 void *local = NULL;
 void *enemy = NULL;
-float closestDistanceSquared = FLT_MAX;
+
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -185,7 +185,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
             if (aim)
             {
-
+                float closestDistanceSquared = FLT_MAX;
                 if (local == NULL)
                 {
                     continue;
@@ -193,13 +193,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 Vector3 localPos;
                 Position(local, &localPos);
                 float dx = playerPos.x - localPos.x;
-                float dy = playerPos.x - localPos.y;
+                float dy = playerPos.y - localPos.y;
                 float dz = playerPos.z - localPos.z;
 
                 float worldDistanceSquared =
                     dx * dx + dy * dy + dz * dz;
 
-                if (worldDistanceSquared > closestDistanceSquared)
+                if (worldDistanceSquared < closestDistanceSquared)
                 {
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
