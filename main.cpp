@@ -103,7 +103,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Text("fwd");
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
-    ImGui::Text("Aim", &aim);
+    ImGui::Checkbox("Aim", &aim);
     ImGui::Checkbox("Test", &test1);
     ImGui::Checkbox("Debug", &debug);
 
@@ -194,7 +194,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 Position(local, &localPos);
                 float dx = playerPos.x - localPos.x;
                 float dy = playerPos.x - localPos.y;
-                float dz = player.z - localPos.z;
+                float dz = playerPos.z - localPos.z;
 
                 float worldDistanceSquared =
                     dx * dx + dy * dy + dz * dz;
