@@ -14,21 +14,21 @@ struct RayCastHit
     float distance;
     Vector2 uv;
     uint32_t collider;
-
 };
 
-
-RayCastHit (*origig_FireBullet)(void* damager, Vector3 origin, Vector3 direction, int weaponType, Vector3 visualOrigin, void* muzzle);
-RayCastHit hook_FireBullet(void* damager, Vector3 origin, Vector3 direction, int weaponType, Vector3 visualOrigin, void* muzzle)
+RayCastHit (*origig_FireBullet)(void *damager, Vector3 origin, Vector3 direction, int weaponType, Vector3 visualOrigin, void *muzzle);
+RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int weaponType, Vector3 visualOrigin, void *muzzle)
 {
     LOGI("Raycast reach");
     Vector3 enemyPos;
     if (damager == local || enemy != NULL)
     {
         Position(enemy, &enemyPos);
+        LOGI("EnemyPos %3.f %3.f %3.f", enemyPos.x, enemyPos.y, enemyPos.z);
+        LOGI("Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);
         direction = GetSilentDirection(origin, enemyPos);
-        LOGI("Change dir");
-       
+        LOGI("Enemy Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);
+        
     }
     return origig_FireBullet(damager, origin, direction, weaponType, visualOrigin, muzzle);
 }
@@ -95,10 +95,10 @@ void test()
     LOGI("Update Fucntion");
     uintptr_t playerUpdate = getAbsoluteAdress(RVA_playerUpdate);
     uintptr_t playerOnDestroy = getAbsoluteAdress(RVA_playerOnDestroy);
-    uintptr_t  FireBullet = base + 0x1f15da8;
+    uintptr_t FireBullet = base + 0x1f15da8;
     int result1 = DobbyHook((void *)playerUpdate, (void *)lateUpdate, (void **)&old_lateUpdate);
     int result2 = DobbyHook((void *)playerOnDestroy, (void *)onDestroy, (void **)&old_onDestroy);
-    int result3 = DobbyHook((void*)FireBullet, (void*)hook_FireBullet, (void**)&origig_FireBullet);
+    int result3 = DobbyHook((void *)FireBullet, (void *)hook_FireBullet, (void **)&origig_FireBullet);
     LOGI("RESULT OF DOBBYHOOK Update: %d", result1);
     LOGI("RETURN OF DOBBYHOOK onDestroy: %d", result2);
 
