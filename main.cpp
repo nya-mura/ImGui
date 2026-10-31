@@ -112,10 +112,13 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     int height = Height();
     if (fovRadius != 150)
     {
-        ImVec2 center(
-            width / 2.0f,
-            height / 2.0f);
-
+        // ImVec2 center(
+        //     width / 2.0f,
+        //     height / 2.0f);
+        Vector2 center = {
+            width / 2.0f;
+            height / 2.0f;
+        };
         ImGui::GetBackgroundDrawList()->AddCircle(
             center,
             fovRadius,
@@ -291,8 +294,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 //     foundEnemy = true;
                 // }
 
-                float dx = screenPos.x - centerX;
-                float dy = screenPos.y - centerY;
+                float dx = playerPos.x - center.x;
+                float dy = playerPos.y - center.y;
 
                 float screenDistanceSquared = dx * dx + dy * dy;
                 
