@@ -379,16 +379,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 IM_COL32(255, 0, 0, 255),
                 2.0f);
         }
-        ImGui::End();
+    }
+    ImGui::End();
 
-        ImGui::Render();
+    ImGui::Render();
 
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        if (should_clear_mouse_pos)
-        {
-            io.MousePos = ImVec2(-1, -1);
-            should_clear_mouse_pos = false;
-        }
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    if (should_clear_mouse_pos)
+    {
+        io.MousePos = ImVec2(-1, -1);
+        should_clear_mouse_pos = false;
     }
     return orig_eglSwapBuffers(dpy, surface);
 }
