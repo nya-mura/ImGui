@@ -116,8 +116,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             width / 2.0f,
             height / 2.0f);
 
-        
-
         ImGui::GetBackgroundDrawList()->AddCircle(
             center,
             fovRadius,
@@ -210,30 +208,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             ImVec2 textPos(point.x + 10.0f, point.y - 6.0f);
             ImGui::GetBackgroundDrawList()->AddText(textPos, IM_COL32(255, 0, 0, 255), healthBuffer);
 
-            if (aim)
-            {
-
-                if (local == NULL)
-                {
-                    continue;
-                }
-               
-                float dx = playerPos.x - localPos.x;
-                float dy = playerPos.y - localPos.y;
-                float dz = playerPos.z - localPos.z;
-
-                float worldDistanceSquared =
-                    dx * dx + dy * dy + dz * dz;
-
-                if (worldDistanceSquared < closestDistanceSquared)
-                {
-                    closestDistanceSquared = worldDistanceSquared;
-                    enemy = Player;
-                    enemyPoint = point;
-                    foundEnemy = true;
-                }
-            }
-
             void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)Player + 0x270);
             if (ThirdPersonBodyPartReferences == NULL)
             {
@@ -287,6 +261,35 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     ImVec2(b.x, height - b.y),
                     IM_COL32(255, 0, 255, 255),
                     2.0f);
+            }
+
+            if (aim)
+            {
+
+                if (local == NULL)
+                {
+                    continue;
+                }
+
+                if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
+                {
+                    continue;
+                }
+
+                float dx = playerPos.x - localPos.x;
+                float dy = playerPos.y - localPos.y;
+                float dz = playerPos.z - localPos.z;
+
+                float worldDistanceSquared =
+                    dx * dx + dy * dy + dz * dz;
+
+                if (worldDistanceSquared < closestDistanceSquared)
+                {
+                    closestDistanceSquared = worldDistanceSquared;
+                    enemy = Player;
+                    enemyPoint = point;
+                    foundEnemy = true;
+                }
             }
 
             // void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
@@ -348,16 +351,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         if (aim && foundEnemy)
         {
             ImGui::Text("Enemy %p", enemy);
-             if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius) == 0)
-                {
-                    continue;
-                }
+            if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius))
+            {
 
-            ImGui::GetBackgroundDrawList()->AddLine(
-                ImVec2(width / 2.0f, height),
-                enemyPoint,
-                IM_COL32(255, 0, 0, 255),
-                2.0f);
+                ImGui::GetBackgroundDrawList()->AddLine(
+                    ImVec2(width / 2.0f, height),
+                    enemyPoint,
+                    IM_COL32(255, 0, 0, 255),
+                    2.0f);
+            }
         }
     }
     ImGui::End();
