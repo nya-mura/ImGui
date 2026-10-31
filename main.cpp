@@ -134,6 +134,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         Vector3 localPos;
         float closestDistanceSquared = FLT_MAX;
         bool foundEnemy = false;
+        ImVec2 enemyPoint;
         for (int i = 0; i < playerlist.count; i++)
         {
             void *Player = (void *)playerlist.addr[i];
@@ -286,7 +287,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
-                    // enemyPoint = point;
+                    enemyPoint = point;
                     foundEnemy = true;
                 }
             }
