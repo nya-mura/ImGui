@@ -136,8 +136,11 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
         ImGui::Text("Team id %d", myTeamId);
         Vector3 localPos;
+        enemy = NULL;
+        foundEnemy = false;
+
         float closestDistanceSquared = FLT_MAX;
-        
+
         ImVec2 enemyPoint;
         for (int i = 0; i < playerlist.count; i++)
         {
@@ -277,7 +280,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
                 if (isInsideFov(worldpos.x, worldpos.y, fovRadius) == 0)
                 {
-                    
+
                     continue;
                 }
 
@@ -375,76 +378,76 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 enemyPoint,
                 IM_COL32(255, 0, 0, 255),
                 2.0f);
+        }
+        ImGui::End();
+
+        ImGui::Render();
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        if (should_clear_mouse_pos)
+        {
+            io.MousePos = ImVec2(-1, -1);
+            should_clear_mouse_pos = false;
+        }
+        return orig_eglSwapBuffers(dpy, surface);
     }
-    ImGui::End();
-
-    ImGui::Render();
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    if (should_clear_mouse_pos)
+    void *sylphy(void *)
     {
-        io.MousePos = ImVec2(-1, -1);
-        should_clear_mouse_pos = false;
-    }
-    return orig_eglSwapBuffers(dpy, surface);
-}
-void *sylphy(void *)
-{
-    LOGI("On Thread");
+        LOGI("On Thread");
 
-    while ((base = GetBaseAdress(libName)) == 0)
-    {
-        LOGE("Not found");
-        sleep(4);
-    }
-    LOGI("Found lib 0x%lx", base);
+        while ((base = GetBaseAdress(libName)) == 0)
+        {
+            LOGE("Not found");
+            sleep(4);
+        }
+        LOGI("Found lib 0x%lx", base);
 
-    void *egl = dlopen("libEGL.so", RTLD_NOW);
-    if (!egl)
-    {
+        void *egl = dlopen("libEGL.so", RTLD_NOW);
+        if (!egl)
+        {
+            return NULL;
+        }
+        LOGI("egl address: %p", egl);
+
+        void *swap = dlsym(egl, "eglSwapBuffers");
+        if (!swap)
+        {
+            return NULL;
+        }
+        LOGI("eglSwapBuffers address: %p", swap);
+        // void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
+        // if (!handle_input) {
+        //     return NULL;
+        // }
+        // LOGI("handle_input address: %p", handle_input);
+        // void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
+        // if (!input) {
+        //     return  NULL;
+        // }
+        // LOGI("input address: %p", input);
+        LOGI("Done");
+
+        int result = DobbyHook(swap, (void *)hook_eglSawpBuffer, (void **)&orig_eglSwapBuffers);
+        // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
+        LOGI("DobbyHook result: %d", result);
+        // LOGI("DobbyHook result1: %d", result1);
+        LOGI("Original function: %p", (void *)orig_eglSwapBuffers);
+        // LOGI("Input Fucntion: %p", (void*)origInput);
+        LOGI("Return Dobby Hook");
+
+        test();
         return NULL;
     }
-    LOGI("egl address: %p", egl);
-
-    void *swap = dlsym(egl, "eglSwapBuffers");
-    if (!swap)
+    __attribute__((constructor)) void lib_main()
     {
-        return NULL;
+        LOGI("Staeted main");
+        pthread_t trixie;
+        pthread_create(&trixie, NULL, sylphy, NULL);
     }
-    LOGI("eglSwapBuffers address: %p", swap);
-    // void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
-    // if (!handle_input) {
-    //     return NULL;
-    // }
-    // LOGI("handle_input address: %p", handle_input);
-    // void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
-    // if (!input) {
-    //     return  NULL;
-    // }
-    // LOGI("input address: %p", input);
-    LOGI("Done");
 
-    int result = DobbyHook(swap, (void *)hook_eglSawpBuffer, (void **)&orig_eglSwapBuffers);
-    // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
-    LOGI("DobbyHook result: %d", result);
-    // LOGI("DobbyHook result1: %d", result1);
-    LOGI("Original function: %p", (void *)orig_eglSwapBuffers);
-    // LOGI("Input Fucntion: %p", (void*)origInput);
-    LOGI("Return Dobby Hook");
-
-    test();
-    return NULL;
-}
-__attribute__((constructor)) void lib_main()
-{
-    LOGI("Staeted main");
-    pthread_t trixie;
-    pthread_create(&trixie, NULL, sylphy, NULL);
-}
-
-extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key)
-{
-    JNIEnv *env;
-    vm->GetEnv((void **)&env, JNI_VERSION_1_6);
-    return JNI_VERSION_1_6;
-}
+    extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM * vm, void *key)
+    {
+        JNIEnv *env;
+        vm->GetEnv((void **)&env, JNI_VERSION_1_6);
+        return JNI_VERSION_1_6;
+    }
