@@ -114,19 +114,19 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     Vector2 center = {
         width / 2.0f,
         height / 2.0f};
-    // if (fovRadius != 150)
-    // {
-    //     // ImVec2 center(
-    //     //     width / 2.0f,
-    //     //     height / 2.0f);
+    if (fovRadius != 150)
+    {
+        ImVec2 center1(
+            width / 2.0f,
+            height / 2.0f);
 
-    //     ImGui::GetBackgroundDrawList()->AddCircle(
-    //         center,
-    //         fovRadius,
-    //         IM_COL32(255, 255, 255, 200),
-    //         64,
-    //         1.5f);
-    // }
+        ImGui::GetBackgroundDrawList()->AddCircle(
+            center1,
+            fovRadius,
+            IM_COL32(255, 255, 255, 200),
+            64,
+            1.5f);
+    }
 
     if (debug)
     {
