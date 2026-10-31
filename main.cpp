@@ -391,64 +391,64 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         }
         return orig_eglSwapBuffers(dpy, surface);
     }
-    void *sylphy(void *)
+}
+void *sylphy(void *)
+{
+    LOGI("On Thread");
+
+    while ((base = GetBaseAdress(libName)) == 0)
     {
-        LOGI("On Thread");
+        LOGE("Not found");
+        sleep(4);
+    }
+    LOGI("Found lib 0x%lx", base);
 
-        while ((base = GetBaseAdress(libName)) == 0)
-        {
-            LOGE("Not found");
-            sleep(4);
-        }
-        LOGI("Found lib 0x%lx", base);
-
-        void *egl = dlopen("libEGL.so", RTLD_NOW);
-        if (!egl)
-        {
-            return NULL;
-        }
-        LOGI("egl address: %p", egl);
-
-        void *swap = dlsym(egl, "eglSwapBuffers");
-        if (!swap)
-        {
-            return NULL;
-        }
-        LOGI("eglSwapBuffers address: %p", swap);
-        // void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
-        // if (!handle_input) {
-        //     return NULL;
-        // }
-        // LOGI("handle_input address: %p", handle_input);
-        // void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
-        // if (!input) {
-        //     return  NULL;
-        // }
-        // LOGI("input address: %p", input);
-        LOGI("Done");
-
-        int result = DobbyHook(swap, (void *)hook_eglSawpBuffer, (void **)&orig_eglSwapBuffers);
-        // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
-        LOGI("DobbyHook result: %d", result);
-        // LOGI("DobbyHook result1: %d", result1);
-        LOGI("Original function: %p", (void *)orig_eglSwapBuffers);
-        // LOGI("Input Fucntion: %p", (void*)origInput);
-        LOGI("Return Dobby Hook");
-
-        test();
+    void *egl = dlopen("libEGL.so", RTLD_NOW);
+    if (!egl)
+    {
         return NULL;
     }
-    __attribute__((constructor)) void lib_main()
-    {
-        LOGI("Staeted main");
-        pthread_t trixie;
-        pthread_create(&trixie, NULL, sylphy, NULL);
-    }
+    LOGI("egl address: %p", egl);
 
-    extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM * vm, void *key)
+    void *swap = dlsym(egl, "eglSwapBuffers");
+    if (!swap)
     {
-        JNIEnv *env;
-        vm->GetEnv((void **)&env, JNI_VERSION_1_6);
-        return JNI_VERSION_1_6;
+        return NULL;
     }
+    LOGI("eglSwapBuffers address: %p", swap);
+    // void* handle_input = xdl_open("libinput.so", XDL_DEFAULT);
+    // if (!handle_input) {
+    //     return NULL;
+    // }
+    // LOGI("handle_input address: %p", handle_input);
+    // void* input = xdl_sym(handle_input, "_ZN7android11MotionEvent8copyFromEPKS0_b", NULL);
+    // if (!input) {
+    //     return  NULL;
+    // }
+    // LOGI("input address: %p", input);
+    LOGI("Done");
+
+    int result = DobbyHook(swap, (void *)hook_eglSawpBuffer, (void **)&orig_eglSwapBuffers);
+    // int result1 = DobbyHook(input, (void*)myInput, (void**)&origInput );
+    LOGI("DobbyHook result: %d", result);
+    // LOGI("DobbyHook result1: %d", result1);
+    LOGI("Original function: %p", (void *)orig_eglSwapBuffers);
+    // LOGI("Input Fucntion: %p", (void*)origInput);
+    LOGI("Return Dobby Hook");
+
+    test();
+    return NULL;
+}
+__attribute__((constructor)) void lib_main()
+{
+    LOGI("Staeted main");
+    pthread_t trixie;
+    pthread_create(&trixie, NULL, sylphy, NULL);
+}
+
+extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key)
+{
+    JNIEnv *env;
+    vm->GetEnv((void **)&env, JNI_VERSION_1_6);
+    return JNI_VERSION_1_6;
 }
