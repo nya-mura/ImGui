@@ -18,8 +18,7 @@
 #include "ByNameModding/obfuscate.h"
 #include "ByNameModding/Il2Cpp.h"
 #include "Viscount/extra.h"
-
-uintptr_t base = 0;
+float fovRadius j = 150.0f uintptr_t base = 0;
 bool bone = false;
 bool aim = false;
 bool debug = false;
@@ -39,6 +38,14 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
     ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
     return;
 }
+int width = Width();
+int height = Height();
+
+
+ImVec2 center(
+    width / 2.0f,
+    height / 2.0f);
+
 
 #define libName "libil2cpp.so"
 
@@ -104,14 +111,22 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::Text("Base: 0x%lx", base);
     ImGui::Text("EntityList: %d", playerlist.count);
     ImGui::Checkbox("Aim", &aim);
+    ImGui::SliderFloat("FOV Radius", &fovRadius, 10.0f, 500.0f, "%.0f px");
     ImGui::Checkbox("Test", &test1);
     ImGui::Checkbox("Debug", &debug);
+    if (fovRadius != 150)
+    {
+
+        ImGui::GetBackgroundDrawList()->AddCircle(
+            center,
+            fovRadius,
+            IM_COL32(255, 255, 255, 200),
+            64,
+            1.5f);
+    }
 
     if (debug)
     {
-
-        int width = Width();
-        int height = Height();
 
         ImGui::Text("Screen Width: %d", width);
         ImGui::Text("Screen Height: %d", height);
@@ -198,6 +213,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             {
 
                 if (local == NULL)
+                {
+                    continue;
+                }
+                if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
                 {
                     continue;
                 }

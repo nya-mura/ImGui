@@ -23,13 +23,18 @@ RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int
     Vector3 enemyPos;
     if (damager == local || enemy != NULL)
     {
-        void* enemyTransform = Transform(enemy);
-        Position(enemyTransform, &enemyPos);
+        void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)enemy + 0x270);
+        if (ThirdPersonBodyPartReferences == NULL)
+        {
+            continue;
+        }
+        // void* enemyTransform = Transform(enemy);
+        void *headBone = *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x20);
+        Position(headBone, &enemyPos);
         LOGI("EnemyPos %3.f %3.f %3.f", enemyPos.x, enemyPos.y, enemyPos.z);
         LOGI("Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);
         direction = GetSilentDirection(origin, enemyPos);
         LOGI("Enemy Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);
-        
     }
     return origig_FireBullet(damager, origin, direction, weaponType, visualOrigin, muzzle);
 }
