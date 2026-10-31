@@ -21,7 +21,7 @@ RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int
 {
     LOGI("Raycast reach");
     Vector3 enemyPos;
-    if (damager == local || enemy != NULL)
+    if (damager == local && enemy != NULL)
     {
         void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)enemy + 0x270);
         LOGI("Bone Class %p", ThirdPersonBodyPartReferences);

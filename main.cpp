@@ -27,6 +27,7 @@ bool test1 = false;
 int myTeamId = -1;
 void *local = NULL;
 void *enemy = NULL;
+bool foundEnemy = false;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -136,7 +137,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         ImGui::Text("Team id %d", myTeamId);
         Vector3 localPos;
         float closestDistanceSquared = FLT_MAX;
-        bool foundEnemy = false;
+        
         ImVec2 enemyPoint;
         for (int i = 0; i < playerlist.count; i++)
         {
@@ -274,38 +275,39 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     continue;
                 }
 
-                // if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
-                // {
-                //     continue;
-                // }
-
-                // float dx = playerPos.x - localPos.x;
-                // float dy = playerPos.y - localPos.y;
-                // float dz = playerPos.z - localPos.z;
-
-                // float worldDistanceSquared =
-                //     dx * dx + dy * dy + dz * dz;
-
-                // if (worldDistanceSquared < closestDistanceSquared)
-                // {
-                //     closestDistanceSquared = worldDistanceSquared;
-                //     enemy = Player;
-                //     enemyPoint = point;
-                //     foundEnemy = true;
-                // }
-
-                float dx = playerPos.x - center.x;
-                float dy = playerPos.y - center.y;
-
-                float screenDistanceSquared = dx * dx + dy * dy;
-
-                if (screenDistanceSquared < closestDistanceSquared)
+                if (isInsideFov(worldpos.x, worldpos.y, fovRadius) == 0)
                 {
-                    closestDistanceSquared = screenDistanceSquared;
+                    
+                    continue;
+                }
+
+                float dx = playerPos.x - localPos.x;
+                float dy = playerPos.y - localPos.y;
+                float dz = playerPos.z - localPos.z;
+
+                float worldDistanceSquared =
+                    dx * dx + dy * dy + dz * dz;
+
+                if (worldDistanceSquared < closestDistanceSquared)
+                {
+                    closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
                     enemyPoint = point;
                     foundEnemy = true;
                 }
+
+                // float dx = playerPos.x - center.x;
+                // float dy = playerPos.y - center.y;
+
+                // float screenDistanceSquared = dx * dx + dy * dy;
+
+                // if (screenDistanceSquared < closestDistanceSquared)
+                // {
+                //     closestDistanceSquared = screenDistanceSquared;
+                //     enemy = Player;
+                //     enemyPoint = point;
+                //     foundEnemy = true;
+                // }
             }
 
             // void *ThirdPersonAnimatorHelper = *(void **)((uintptr_t)Player + 0x260);
@@ -373,11 +375,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 enemyPoint,
                 IM_COL32(255, 0, 0, 255),
                 2.0f);
-            // if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius))
-            // {
-
-            // }
-        }
     }
     ImGui::End();
 
