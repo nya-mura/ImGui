@@ -110,15 +110,15 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
 
     int width = Width();
     int height = Height();
+    Vector2 center = {
+        width / 2.0f,
+        height / 2.0f};
     if (fovRadius != 150)
     {
         // ImVec2 center(
         //     width / 2.0f,
         //     height / 2.0f);
-        Vector2 center = {
-            width / 2.0f,
-            height / 2.0f
-        };
+
         ImGui::GetBackgroundDrawList()->AddCircle(
             center,
             fovRadius,
@@ -298,7 +298,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 float dy = playerPos.y - center.y;
 
                 float screenDistanceSquared = dx * dx + dy * dy;
-                
+
                 if (screenDistanceSquared < closestDistanceSquared)
                 {
                     closestDistanceSquared = screenDistanceSquared;
