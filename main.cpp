@@ -217,11 +217,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     continue;
                 }
-                if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
-                {
-                    continue;
-                }
-
+               
                 float dx = playerPos.x - localPos.x;
                 float dy = playerPos.y - localPos.y;
                 float dz = playerPos.z - localPos.z;
@@ -352,6 +348,11 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         if (aim && foundEnemy)
         {
             ImGui::Text("Enemy %p", enemy);
+             if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius) == 0)
+                {
+                    continue;
+                }
+
             ImGui::GetBackgroundDrawList()->AddLine(
                 ImVec2(width / 2.0f, height),
                 enemyPoint,
