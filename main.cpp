@@ -18,7 +18,8 @@
 #include "ByNameModding/obfuscate.h"
 #include "ByNameModding/Il2Cpp.h"
 #include "Viscount/extra.h"
-float fovRadius j = 150.0f uintptr_t base = 0;
+float fovRadius = 150.0f;
+uintptr_t base = 0;
 bool bone = false;
 bool aim = false;
 bool debug = false;
