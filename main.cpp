@@ -276,16 +276,29 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 //     continue;
                 // }
 
-                float dx = playerPos.x - localPos.x;
-                float dy = playerPos.y - localPos.y;
-                float dz = playerPos.z - localPos.z;
+                // float dx = playerPos.x - localPos.x;
+                // float dy = playerPos.y - localPos.y;
+                // float dz = playerPos.z - localPos.z;
 
-                float worldDistanceSquared =
-                    dx * dx + dy * dy + dz * dz;
+                // float worldDistanceSquared =
+                //     dx * dx + dy * dy + dz * dz;
 
-                if (worldDistanceSquared < closestDistanceSquared)
+                // if (worldDistanceSquared < closestDistanceSquared)
+                // {
+                //     closestDistanceSquared = worldDistanceSquared;
+                //     enemy = Player;
+                //     enemyPoint = point;
+                //     foundEnemy = true;
+                // }
+
+                float dx = screenPos.x - centerX;
+                float dy = screenPos.y - centerY;
+
+                float screenDistanceSquared = dx * dx + dy * dy;
+                
+                if (screenDistanceSquared < closestDistanceSquared)
                 {
-                    closestDistanceSquared = worldDistanceSquared;
+                    closestDistanceSquared = screenDistanceSquared;
                     enemy = Player;
                     enemyPoint = point;
                     foundEnemy = true;
@@ -351,15 +364,14 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         if (aim && foundEnemy)
         {
             ImGui::Text("Enemy %p", enemy);
-        
-                ImGui::GetBackgroundDrawList()->AddLine(
-                    ImVec2(width / 2.0f, height),
-                    enemyPoint,
-                    IM_COL32(255, 0, 0, 255),
-                    2.0f);
+
+            ImGui::GetBackgroundDrawList()->AddLine(
+                ImVec2(width / 2.0f, height),
+                enemyPoint,
+                IM_COL32(255, 0, 0, 255),
+                2.0f);
             // if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius))
             // {
-
 
             // }
         }

@@ -29,7 +29,7 @@ RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int
         {
 
             // void* enemyTransform = Transform(enemy);
-            void *headBone = *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x20);
+            void *headBone = *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x28);
             LOGI("Bone Transform %p", headBone);
             Position(headBone, &enemyPos);
             LOGI("EnemyPos %3.f %3.f %3.f", enemyPos.x, enemyPos.y, enemyPos.z);
