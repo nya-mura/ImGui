@@ -231,3 +231,107 @@ for (int i = 0; i < playerCount; i++)
         closestEnemy = enemy;
     }
 }
+
+
+// Option A: Exact layout (48 bytes on 64-bit, 44 bytes on 32-bit)
+struct CustomRaycastHit {
+    Vector3 point;      // 0x00 (12 bytes)
+    Vector3 normal;     // 0x0C (12 bytes)
+    uint32_t faceId;    // 0x18 (4 bytes)
+    float distance;     // 0x1C (4 bytes)
+    Vector2 uv;         // 0x20 (8 bytes - assuming Vector2 is 2 floats)
+    int32_t collider;   // 0x28 (4 bytes - Unity 2019+ uses instanceID int, older uses Collider*)
+};
+
+// Option B: Raw byte-padding (if you only want to pass the return value through)
+struct RawRaycastHit {
+    uint8_t data[44]; // Adjust to 48 if m_Collider is a 64-bit pointer in your Unity version
+};
+
+#include "dobby.h"
+
+// Function pointer to hold the original function
+CustomRaycastHit (*orig_FireBullet)(
+    void* damager, 
+    Vector3 origin, 
+    Vector3 direction, 
+    int weaponType, 
+    Vector3 visualOrigin, 
+    void* muzzle
+);
+
+// Detour function
+CustomRaycastHit hook_FireBullet(
+    void* damager, 
+    Vector3 origin, 
+    Vector3 direction, 
+    int weaponType, 
+    Vector3 visualOrigin, 
+    void* muzzle
+) {
+    // Modify arguments before calling original (e.g., silent aim direction)
+    // direction = GetTargetDirection(origin);
+
+    // Call original function
+    CustomRaycastHit hit = orig_FireBullet(damager, origin, direction, weaponType, visualOrigin, muzzle);
+
+    // Or modify the returned struct data before returning to caller
+    // hit.distance = 999.0f;
+
+    return hit;
+}
+
+// Inside your initialization thread:
+void InstallHook(void* targetAddress) {
+    DobbyHook(
+        targetAddress, 
+        (void*)hook_FireBullet, 
+        (void**)&orig_FireBullet
+    );
+}
+
+#include <math.h>
+
+struct Vector3 {
+    float x, y, z;
+};
+
+// Helper function to calculate normalized direction from Origin to Target
+Vector3 GetSilentDirection(Vector3 origin, Vector3 targetPos) {
+    // 1. Subtract origin from target to get the directional vector
+    Vector3 delta;
+    delta.x = targetPos.x - origin.x;
+    delta.y = targetPos.y - origin.y;
+    delta.z = targetPos.z - origin.z;
+
+    // 2. Calculate magnitude (distance between origin and target)
+    float length = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+
+    // 3. Normalize the vector (make its length 1.0f)
+    if (length > 0.0001f) {
+        delta.x /= length;
+        delta.y /= length;
+        delta.z /= length;
+    }
+
+    return delta;
+}
+
+CustomRaycastHit hook_FireBullet(
+    void* damager, 
+    Vector3 origin, 
+    Vector3 direction, 
+    int weaponType, 
+    Vector3 visualOrigin, 
+    void* muzzle
+) {
+    // Check if you have a valid enemy target
+    if (hasValidEnemyTarget) {
+        // Use the 'origin' already passed by the game!
+        direction = GetSilentDirection(origin, enemyWorldPos);
+    }
+
+    // Pass the original 'origin' and your new normalized 'direction'
+    return orig_FireBullet(damager, origin, direction, weaponType, visualOrigin, muzzle);
+}
+

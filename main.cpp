@@ -25,6 +25,8 @@ bool aim = false;
 bool debug = false;
 bool test1 = false;
 int myTeamId = -1;
+void *local = NULL;
+void *enemy = NULL;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "IMGUI", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "IMGUI", __VA_ARGS__)
 #define HOOKAF(ret, func, ...)      \
@@ -46,6 +48,7 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
 #include <unistd.h>
 #include "Viscount/memory.h"
 #include "hack/offset.h"
+#include "hack/utility.h"
 #include "hack/class.h"
 #include "hack/bone.h"
 #include "hack/esp.h"
@@ -110,8 +113,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         int width = Width();
         int height = Height();
 
-        void *local = NULL;
-        void *enemy = NULL;
         ImGui::Text("Screen Width: %d", width);
         ImGui::Text("Screen Height: %d", height);
 
