@@ -9,7 +9,7 @@ struct PlayerList
 struct RayCastHit
 {
     Vector3 point;
-    Vecor3 common;
+    Vector3 common;
     uint32_t faceId;
     float distance;
     Vector2 uv;
@@ -25,7 +25,7 @@ RayCastHit hook_FireBullet(void* damager, Vector3 origin, Vector3 direction, int
     Vector3 enemyPos;
     if (damager == local || enemy != NULL)
     {
-        Position(enemy, &enemy);
+        Position(enemy, &enemyPos);
         direction = GetSilentDirection(origin, enemyPos);
         LOGI("Change dir");
        
