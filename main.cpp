@@ -451,3 +451,4 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         vm->GetEnv((void **)&env, JNI_VERSION_1_6);
         return JNI_VERSION_1_6;
     }
+}
