@@ -59,10 +59,6 @@ int width = Width();
 int height = Height();
 
 
-ImVec2 center(
-    width / 2.0f,
-    height / 2.0f);
-
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
