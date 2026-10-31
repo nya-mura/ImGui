@@ -23,7 +23,8 @@ RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int
     Vector3 enemyPos;
     if (damager == local || enemy != NULL)
     {
-        Position(enemy, &enemyPos);
+        void* enemyTransform = Transform(enemy);
+        Position(enemyTransform, &enemyPos);
         LOGI("EnemyPos %3.f %3.f %3.f", enemyPos.x, enemyPos.y, enemyPos.z);
         LOGI("Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);
         direction = GetSilentDirection(origin, enemyPos);
