@@ -24,11 +24,13 @@ RayCastHit hook_FireBullet(void *damager, Vector3 origin, Vector3 direction, int
     if (damager == local || enemy != NULL)
     {
         void *ThirdPersonBodyPartReferences = *(void **)((uintptr_t)enemy + 0x270);
+        LOGI("Bone Class %p", ThirdPersonBodyPartReferences);
         if (ThirdPersonBodyPartReferences != NULL)
         {
 
             // void* enemyTransform = Transform(enemy);
             void *headBone = *(void **)((uintptr_t)ThirdPersonBodyPartReferences + 0x20);
+            LOGI("Bone Transform %p", headBone);
             Position(headBone, &enemyPos);
             LOGI("EnemyPos %3.f %3.f %3.f", enemyPos.x, enemyPos.y, enemyPos.z);
             LOGI("Direction %3.f %3.f %3.f", direction.x, direction.y, direction.z);

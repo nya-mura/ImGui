@@ -133,7 +133,6 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         ImGui::Text("Team id %d", myTeamId);
         Vector3 localPos;
         float closestDistanceSquared = FLT_MAX;
-        ImVec2 enemyPoint;
         bool foundEnemy = false;
         for (int i = 0; i < playerlist.count; i++)
         {
@@ -271,10 +270,10 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                     continue;
                 }
 
-                if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
-                {
-                    continue;
-                }
+                // if (isInsideFov(playerPos.x, playerPos.y, fovRadius) == 0)
+                // {
+                //     continue;
+                // }
 
                 float dx = playerPos.x - localPos.x;
                 float dy = playerPos.y - localPos.y;
@@ -287,7 +286,7 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
                 {
                     closestDistanceSquared = worldDistanceSquared;
                     enemy = Player;
-                    enemyPoint = point;
+                    // enemyPoint = point;
                     foundEnemy = true;
                 }
             }
@@ -351,15 +350,17 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         if (aim && foundEnemy)
         {
             ImGui::Text("Enemy %p", enemy);
-            if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius))
-            {
-
+        
                 ImGui::GetBackgroundDrawList()->AddLine(
                     ImVec2(width / 2.0f, height),
                     enemyPoint,
                     IM_COL32(255, 0, 0, 255),
                     2.0f);
-            }
+            // if (isInsideFov(enemyPoint.x, enemyPoint.y, fovRadius))
+            // {
+
+
+            // }
         }
     }
     ImGui::End();
