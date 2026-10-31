@@ -116,8 +116,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
         //     width / 2.0f,
         //     height / 2.0f);
         Vector2 center = {
-            width / 2.0f;
-            height / 2.0f;
+            width / 2.0f,
+            height / 2.0f
         };
         ImGui::GetBackgroundDrawList()->AddCircle(
             center,
