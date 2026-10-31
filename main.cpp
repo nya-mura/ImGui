@@ -39,13 +39,6 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
     ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
     return;
 }
-int width = Width();
-int height = Height();
-
-
-ImVec2 center(
-    width / 2.0f,
-    height / 2.0f);
 
 
 #define libName "libil2cpp.so"
@@ -61,6 +54,15 @@ ImVec2 center(
 #include "hack/bone.h"
 #include "hack/esp.h"
 #include "touch.h"
+
+int width = Width();
+int height = Height();
+
+
+ImVec2 center(
+    width / 2.0f,
+    height / 2.0f);
+
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
