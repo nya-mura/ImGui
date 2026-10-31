@@ -20,11 +20,13 @@ Vector3 GetSilentDirection(Vector3 origin, Vector3 targetPos)
 
 int isInsideFov(float x, float y, float radius)
 {
+
+    int width = Width();
+    int height = Height();
     float centerX = width / 2.0f;
     float centerY = height / 2.0f;
     float dx = x - centerX;
     float dy = y - centerY;
 
     return (dx * dx + dy * dy) <= (radius * radius);
-
 }

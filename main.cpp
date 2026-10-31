@@ -40,7 +40,6 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
     return;
 }
 
-
 #define libName "libil2cpp.so"
 
 #include <pthread.h>
@@ -54,11 +53,6 @@ HOOKAF(void, Input, void *thiz, void *ex_ab, void *ex_ac)
 #include "hack/bone.h"
 #include "hack/esp.h"
 #include "touch.h"
-
-int width = Width();
-int height = Height();
-
-
 
 EGLBoolean (*orig_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
@@ -113,8 +107,16 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
     ImGui::SliderFloat("FOV Radius", &fovRadius, 10.0f, 500.0f, "%.0f px");
     ImGui::Checkbox("Test", &test1);
     ImGui::Checkbox("Debug", &debug);
+
+    int width = Width();
+    int height = Height();
     if (fovRadius != 150)
     {
+        ImVec2 center(
+            width / 2.0f,
+            height / 2.0f);
+
+        )
 
         ImGui::GetBackgroundDrawList()->AddCircle(
             center,
