@@ -389,8 +389,8 @@ EGLBoolean hook_eglSawpBuffer(EGLDisplay dpy, EGLSurface surface)
             io.MousePos = ImVec2(-1, -1);
             should_clear_mouse_pos = false;
         }
-        return orig_eglSwapBuffers(dpy, surface);
     }
+    return orig_eglSwapBuffers(dpy, surface);
 }
 void *sylphy(void *)
 {
